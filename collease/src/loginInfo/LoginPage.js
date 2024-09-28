@@ -1,43 +1,58 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './LoginPage.css'; // Import the CSS file
 
 function LoginPage({ setAuth }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Simple authentication logic for demonstration
     if (username && password) {
-      setAuth(true); // Set authenticated
-      navigate('/home'); // Redirect to home page
+      setAuth(true);
+      navigate('/home');
+    } else {
+      setLoginError('Please enter both a username and password.');
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-      <button onClick={() => navigate('/create-profile')}>Create Profile</button>
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Collease</h2>
+        <p className="login-text">Please enter your credentials to Log In.</p>
+        {loginError && <p className="error-text">{loginError}</p>}
+        <form onSubmit={handleLogin} className="login-form">
+          <div className="input-group">
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              required
+            />
+          </div>
+          <div className="input-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <button type="submit" className="login-button">Login</button>
+        </form>
+        <button className="create-profile-button" onClick={() => navigate('/create-profile')}>
+          Create Profile
+        </button>
+      </div>
     </div>
   );
 }

@@ -8,10 +8,9 @@ function CreateProfilePage({ setAuth }) {
 
   const handleCreateProfile = (e) => {
     e.preventDefault();
-    // Simple profile creation logic for demonstration
     if (username && password) {
-      setAuth(true); // Set authenticated
-      navigate('/home'); // Redirect to home page
+      setAuth(true); 
+      navigate('/home'); 
     }
   };
 
