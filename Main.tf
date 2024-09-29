@@ -104,11 +104,12 @@ data "aws_ami" "debian" {
 resource "random_string" "unique_suffix" {
   length  = 8
   special = false
+  upper   = false  # Ensures the string is lowercase
 }
 
 # S3 Bucket
 resource "aws_s3_bucket" "website_bucket" {
-   bucket = "collease-hackathon24-${random_string.unique_suffix.result}"  # Corrected: Removed extra brace
+   bucket = "collease-hackathon24-${random_string.unique_suffix.result}"
 }
 
 terraform {
