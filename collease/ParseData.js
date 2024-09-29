@@ -15,13 +15,17 @@ app.use(express.json());
 //placeholder 
 let studentProfile = {
     transcript: [
-        ["Math", "B", 1],
-        ["English", "B", 2],
-        ["Biology", "B", 3],
-        ["History", "B", 4],
-        ["Physics", "B", 4],
-        ["Chemistry", "B", 3],
-        ["Computer Science", "B", 2]
+        {year: 1, courses: [
+            ["Math", "B"],
+            ["Biology", "B"],
+            ["History", "B"],
+            ["Physics", "B"],
+            ["Chemistry", "B"],
+        ]},
+        {year: 2, courses: [
+            ["English", "B"],
+            ["Computer Science", "B"]
+        ]},
     ],
     gpa: 4.0,
     SAT: 1300,
@@ -42,6 +46,7 @@ let scoreBounds = [175, 2950]
 let scoreDistribution = [1350, 2000, 2250]
 
 function computeStandardizedScore(studentProfile) {
+    console.log(studentProfile)
     const gradeMap = {
         "A+": 4.3,
         "A": 4.0,
@@ -62,7 +67,7 @@ function computeStandardizedScore(studentProfile) {
     let adjustedPoints = 0; 
     let totalClasses = 0;
 
-    studentProfile.transcript.forEach(([subject, grade]) => {
+    /*studentProfile.transcript.forEach(([subject, grade]) => {
         let gradeValue = gradeMap[grade] || 0;
         let adjustedValue = gradeValue;
         if (subject.startsWith("AP")) {
@@ -71,7 +76,20 @@ function computeStandardizedScore(studentProfile) {
         totalPoints += gradeValue;
         adjustedPoints += adjustedValue;
         totalClasses++;
-    });
+    });*/
+
+    studentProfile.transcript.forEach(({courses}) =>{
+        courses.forEach(([subject, grade])=>{
+            let gradeValue = gradeMap[grade] || 0;
+            let adjustedValue = gradeValue;
+            if (subject.startsWith("AP")) {
+                adjustedValue += 0.5;
+            }
+            totalPoints += gradeValue;
+            adjustedPoints += adjustedValue;
+            totalClasses++;
+        })
+    })
 
     const gpa = totalPoints / totalClasses * 1.0;
     studentProfile.gpa = gpa 
