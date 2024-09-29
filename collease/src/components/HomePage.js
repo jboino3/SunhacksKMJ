@@ -9,8 +9,10 @@ function HomePage() {
     degree: '',
     schoolSize: '',
     city: '',
-    state: ''
+    state: '',
+    interests: [] // New interests field to store user's interests
   });
+  const [newInterest, setNewInterest] = useState(''); // Temporary state to add new interests
 
   // Updated school size options with specific ranges
   const schoolSizeOptions = [
@@ -24,6 +26,23 @@ function HomePage() {
     setSearchParams({
       ...searchParams,
       [name]: value
+    });
+  };
+
+  const handleInterestAdd = () => {
+    if (newInterest.trim()) {
+      setSearchParams({
+        ...searchParams,
+        interests: [...searchParams.interests, newInterest.trim()]
+      });
+      setNewInterest(''); // Clear the input field after adding
+    }
+  };
+
+  const handleInterestRemove = (interestToRemove) => {
+    setSearchParams({
+      ...searchParams,
+      interests: searchParams.interests.filter((interest) => interest !== interestToRemove)
     });
   };
 
@@ -117,6 +136,33 @@ function HomePage() {
               </p>
             </div>
 
+            {/* Interests Section */}
+            <div className="interests-section">
+              <h3>Interests:</h3>
+              <input
+                type="text"
+                value={newInterest}
+                onChange={(e) => setNewInterest(e.target.value)}
+                placeholder="Add a new interest"
+              />
+              <button type="button" onClick={handleInterestAdd}>Add Interest</button>
+              
+              {/* Display added interests */}
+              <div className="interests-list">
+                {searchParams.interests.map((interest, index) => (
+                  <div key={index} className="interest-item">
+                    <span>{interest}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleInterestRemove(interest)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <button type="submit">Search</button>
             <button
               type="button"
@@ -136,6 +182,7 @@ function HomePage() {
                 <p>Degree: {prompt.degree}</p>
                 <p>School Size: {prompt.schoolSize}</p>
                 <p>Location: {prompt.city ? `${prompt.city}, ${prompt.state}` : 'Not specified'}</p>
+                <p>Interests: {prompt.interests.join(', ')}</p>
               </div>
             ))}
           </div>
