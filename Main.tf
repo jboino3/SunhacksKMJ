@@ -132,26 +132,19 @@ resource "aws_s3_bucket_website_configuration" "website" {
   }
 }
 
-
 resource "aws_s3_bucket_public_access_block" "website_bucket_block" {
   bucket = aws_s3_bucket.website_bucket.id
 
-  block_public_acls       = true
-  ignore_public_acls      = true
-  block_public_policy     = true
-  restrict_public_buckets = true
+  block_public_acls       = false
+  ignore_public_acls      = false
+  block_public_policy     = false
+  restrict_public_buckets = false
 }
-
 
 # Upload Website Files to S3 Bucket
 locals {
   # List of files you want to upload to S3
-  website_files = [
-    "public/index.html",
-    "public/styles.css",
-    "src/app.js",
-    # Add other files you want to include, explicitly listing them
-  ]
+  website_files = fileset("${path.module}/build", "**")
 }
 
 resource "aws_s3_object" "website_files" {
@@ -159,9 +152,25 @@ resource "aws_s3_object" "website_files" {
 
   bucket = aws_s3_bucket.website_bucket.id
   key    = each.value
-  source = "${path.module}/collease/${each.value}"
-  # Removed the ACL as it's not needed with the current bucket settings
+  source = "${path.module}/build/${each.value}"
 }
+
+resource "aws_s3_bucket_policy" "website_bucket_policy" {
+  bucket = aws_s3_bucket.website_bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action    = ["s3:GetObject"]
+        Effect    = "Allow"
+        Resource  = "${aws_s3_bucket.website_bucket.arn}/*"
+        Principal = "*"
+      }
+    ]
+  })
+}
+
 
 # Outputs
 output "public_ip" {
