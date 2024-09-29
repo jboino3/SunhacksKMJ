@@ -18,6 +18,7 @@ function HomePage() {
     jobs: [{ title: '', description: '', startDate: '', endDate: '' }],
     skills: [],
     interests: [],
+    transcript: [{ year: 'Year 1', courses: [{ name: '', grade: 'A+' }] }],
   });
   const [newInterest, setNewInterest] = useState('');
   const [newSkill, setNewSkill] = useState('');
@@ -122,6 +123,33 @@ function HomePage() {
     });
   };
 
+  const addYear = () => {
+    const newYear = `Year ${searchParams.transcript.length + 1}`;
+    setSearchParams({
+      ...searchParams,
+      transcript: [...searchParams.transcript, { year: newYear, courses: [{ name: '', grade: 'A+' }] }],
+    });
+  };
+
+  const removeYear = (index) => {
+    setSearchParams({
+      ...searchParams,
+      transcript: searchParams.transcript.filter((_, i) => i !== index),
+    });
+  };
+
+  const addCourseToYear = (yearIndex) => {
+    const updatedTranscript = [...searchParams.transcript];
+    updatedTranscript[yearIndex].courses.push({ name: '', grade: 'A+' });
+    setSearchParams({ ...searchParams, transcript: updatedTranscript });
+  };
+
+  const removeCourseFromYear = (yearIndex, courseIndex) => {
+    const updatedTranscript = [...searchParams.transcript];
+    updatedTranscript[yearIndex].courses = updatedTranscript[yearIndex].courses.filter((_, i) => i !== courseIndex);
+    setSearchParams({ ...searchParams, transcript: updatedTranscript });
+  };
+
   const handleSearch = async (e) => {
     e.preventDefault();
 
@@ -137,6 +165,10 @@ function HomePage() {
       projects: searchParams.projects,
       jobs: searchParams.jobs,
       skills: searchParams.skills,
+      transcript: searchParams.transcript.map((year) => ({
+        year: parseInt(year.year.replace('Year ', '')),
+        courses: year.courses.map((course) => [course.name, course.grade]),
+      })),
     };
 
     try {
@@ -334,6 +366,64 @@ function HomePage() {
               ))}
               <button type="button" onClick={addJob}>
                 Add Another Job
+              </button>
+            </div>
+
+            {/* Transcript */}
+            <div>
+              <h4>Transcript (Classes and Grades by Year)</h4>
+              {searchParams.transcript.map((year, yearIndex) => (
+                <div key={yearIndex} className="year-section">
+                  <h5>{year.year}</h5>
+                  {year.courses.map((course, courseIndex) => (
+                    <div key={courseIndex} className="class-grade-container">
+                      <input
+                        type="text"
+                        value={course.name}
+                        placeholder="Class Name"
+                        onChange={(e) => {
+                          const updatedTranscript = [...searchParams.transcript];
+                          updatedTranscript[yearIndex].courses[courseIndex].name = e.target.value;
+                          setSearchParams({ ...searchParams, transcript: updatedTranscript });
+                        }}
+                      />
+                      <select
+                        value={course.grade}
+                        onChange={(e) => {
+                          const updatedTranscript = [...searchParams.transcript];
+                          updatedTranscript[yearIndex].courses[courseIndex].grade = e.target.value;
+                          setSearchParams({ ...searchParams, transcript: updatedTranscript });
+                        }}
+                      >
+                        <option value="A+">A+</option>
+                        <option value="A">A</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B">B</option>
+                        <option value="B-">B-</option>
+                        <option value="C+">C+</option>
+                        <option value="C">C</option>
+                        <option value="C-">C-</option>
+                        <option value="D+">D+</option>
+                        <option value="D">D</option>
+                        <option value="D-">D-</option>
+                        <option value="F">F</option>
+                      </select>
+                      <button type="button" onClick={() => removeCourseFromYear(yearIndex, courseIndex)}>
+                        Remove Class
+                      </button>
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => addCourseToYear(yearIndex)}>
+                    Add Another Class for {year.year}
+                  </button>
+                  <button type="button" onClick={() => removeYear(yearIndex)}>
+                    Remove {year.year}
+                  </button>
+                </div>
+              ))}
+              <button type="button" onClick={addYear}>
+                Add Another Year
               </button>
             </div>
 
