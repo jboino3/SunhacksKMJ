@@ -9,8 +9,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-let responseData;
-
 // Placeholder student profile object with sample data
 let studentProfile = {
     transcript: [
@@ -115,22 +113,12 @@ app.post('/api/college-data', async (req, res) => {
                 {role: "user", content: `There is a student profile with a standardized score of ${score}, GPA of ${studentProfile.gpa}, and SAT/ACT of ${studentProfile.testScore}. Score is calculated based on a combination of GPA, Test Scores, and AP Exam scores. The student is interested in the following degree programs in order of preference: ${studentProfile.degree_preferences.join(", ")}. Additionally, their interests include: ${studentProfile.interests.join(", ")}. Please analyze this information and provide a list of colleges that would be a good fit based on their scores, interests, and desired majors, considering that if the second choice major has much better options, it should carry higher weight than usual. Also, compare their GPA and test score against the distribution of GPAs and test scores typical of these universities. Use this comparison to evaluate whether that university is a good fit. Listed universities should be the best possible fits. Remember to compare the student's standardized score to the table of standardized score distributions as a way to evaluate their edge over other applicants.`}
             ],
         });
-        responseData = {test: score}
-        res.json(responseData);
+        res.json({test: score});
         // You can uncomment this to log the response if needed.
         // console.log(response.choices[0].message.content);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: 'Failed to process request' });
-    }
-});
-app.get('/api/college-data', (req, res) => {
-    if (responseData) {
-        res.json(responseData); 
-        console.log(res)
-    } else {
-        console.log("Failed")
-        res.status(404).json({ error: 'Failed' }); 
     }
 });
 

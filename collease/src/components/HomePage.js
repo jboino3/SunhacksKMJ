@@ -23,10 +23,11 @@ function HomePage() {
   const [newInterest, setNewInterest] = useState('');
   const [newSkill, setNewSkill] = useState('');
   const [searchResults, setSearchResults] = useState([]); // Store the search results
-  const [testScore, setTestScore] = useState(null); // Store the test score from the backend
   const [collegeResults, setCollegeResults] = useState([]); // Store the results from GET request
+  const [collegeResponse, setCollegeResponse] = useState(null);
 
   // Function to fetch college results after the POST request
+  /*
   const fetchCollegeResults = async () => {
     try {
       const res = await fetch('http://localhost:5001/api/college-data');
@@ -38,7 +39,7 @@ function HomePage() {
     } catch (error) {
       console.error('Error fetching college results:', error);
     }
-  };
+  };*/
 
   const schoolSizeOptions = [
     { label: 'Small (1-1,000 students)', value: 'Small' },
@@ -202,12 +203,14 @@ function HomePage() {
 
       const data = await res.json();
       console.log('Test value from server:', data.test); // Logging the "test" value
+      setCollegeResponse(data.test)
 
-      // Store the test score in the state
-      setTestScore(data.test);
+      /*
+      setCollegeResults(data.test)
 
       // Fetch updated results after successful POST
       await fetchCollegeResults();
+      */
 
       setPreviousPrompts([...previousPrompts, searchParams]);
       setIsSearching(false);
@@ -545,6 +548,7 @@ function HomePage() {
                 <p>School Size: {prompt.schoolSize}</p>
                 <p>Location: {prompt.city ? `${prompt.city}, ${prompt.state}` : 'Not specified'}</p>
                 <p>Interests: {prompt.interests.join(', ')}</p>
+                <p>Response: {collegeResponse}</p>
               </div>
             ))}
           </div>
@@ -555,8 +559,6 @@ function HomePage() {
                 {searchResults.map((result, index) => (
                   <li key={index}>
                     {`${result.name} - ${result.location}`}
-                    {/* Display the test score */}
-                    {testScore !== null && <p>Test Score: {testScore}</p>}
                   </li>
                 ))}
               </ul>
