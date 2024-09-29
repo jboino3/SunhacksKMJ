@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './HomePage.css';
-import collegeMajors from './collegeMajor'; 
+import collegeMajors from './collegeMajor';
 
 function HomePage() {
   const [previousPrompts, setPreviousPrompts] = useState([]);
@@ -10,23 +10,30 @@ function HomePage() {
     schoolSize: '',
     city: '',
     state: '',
-    interests: [] 
+    gpa: '',
+    satScore: '',
+    actScore: '',
+    apScores: [{ name: '', score: '1' }],
+    projects: [{ name: '', description: '', startDate: '', endDate: '' }],
+    jobs: [{ title: '', description: '', startDate: '', endDate: '' }],
+    skills: [],
+    interests: [],
   });
-  const [newInterest, setNewInterest] = useState(''); 
-  const [searchResults, setSearchResults] = useState([]); 
+  const [newInterest, setNewInterest] = useState('');
+  const [newSkill, setNewSkill] = useState('');
+  const [searchResults, setSearchResults] = useState([]); // Store the search results
 
-  // Updated school size options with specific ranges
   const schoolSizeOptions = [
     { label: 'Small (1-1,000 students)', value: 'Small' },
     { label: 'Medium (1,001-10,000 students)', value: 'Medium' },
-    { label: 'Large (10,001+ students)', value: 'Large' }
+    { label: 'Large (10,001+ students)', value: 'Large' },
   ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setSearchParams({
       ...searchParams,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -34,35 +41,104 @@ function HomePage() {
     if (newInterest.trim()) {
       setSearchParams({
         ...searchParams,
-        interests: [...searchParams.interests, newInterest.trim()]
+        interests: [...searchParams.interests, newInterest.trim()],
       });
       setNewInterest(''); // Clear the input field after adding
+    }
+  };
+
+  const handleSkillAdd = () => {
+    if (newSkill.trim()) {
+      setSearchParams({
+        ...searchParams,
+        skills: [...searchParams.skills, newSkill.trim()],
+      });
+      setNewSkill(''); // Clear the input field after adding
     }
   };
 
   const handleInterestRemove = (interestToRemove) => {
     setSearchParams({
       ...searchParams,
-      interests: searchParams.interests.filter((interest) => interest !== interestToRemove)
+      interests: searchParams.interests.filter((interest) => interest !== interestToRemove),
+    });
+  };
+
+  const handleSkillRemove = (skillToRemove) => {
+    setSearchParams({
+      ...searchParams,
+      skills: searchParams.skills.filter((skill) => skill !== skillToRemove),
+    });
+  };
+
+  const handleApScoreChange = (index, field, value) => {
+    const updatedApScores = [...searchParams.apScores];
+    updatedApScores[index][field] = value;
+    setSearchParams({
+      ...searchParams,
+      apScores: updatedApScores,
+    });
+  };
+
+  const addApScore = () => {
+    setSearchParams({
+      ...searchParams,
+      apScores: [...searchParams.apScores, { name: '', score: '1' }],
+    });
+  };
+
+  const removeApScore = (index) => {
+    setSearchParams({
+      ...searchParams,
+      apScores: searchParams.apScores.filter((_, i) => i !== index),
+    });
+  };
+
+  const addProject = () => {
+    setSearchParams({
+      ...searchParams,
+      projects: [...searchParams.projects, { name: '', description: '', startDate: '', endDate: '' }],
+    });
+  };
+
+  const removeProject = (index) => {
+    setSearchParams({
+      ...searchParams,
+      projects: searchParams.projects.filter((_, i) => i !== index),
+    });
+  };
+
+  const addJob = () => {
+    setSearchParams({
+      ...searchParams,
+      jobs: [...searchParams.jobs, { title: '', description: '', startDate: '', endDate: '' }],
+    });
+  };
+
+  const removeJob = (index) => {
+    setSearchParams({
+      ...searchParams,
+      jobs: searchParams.jobs.filter((_, i) => i !== index),
     });
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
-  
+
     const studentProfile = {
-      transcript: [], 
-      gpa: null, 
-      SAT: null, 
-      ACT: null, 
-      testScore: null, 
-      AP_scores: [], 
+      gpa: parseFloat(searchParams.gpa),
+      SAT: searchParams.satScore ? parseInt(searchParams.satScore, 10) : null,
+      ACT: searchParams.actScore ? parseInt(searchParams.actScore, 10) : null,
+      AP_scores: searchParams.apScores.map((ap) => [ap.name, parseInt(ap.score, 10)]),
       location: [searchParams.city || '', searchParams.state || ''],
       interests: searchParams.interests,
       degree_preferences: [searchParams.degree],
       school_size: searchParams.schoolSize,
+      projects: searchParams.projects,
+      jobs: searchParams.jobs,
+      skills: searchParams.skills,
     };
-  
+
     try {
       const res = await fetch('http://localhost:5001/api/college-data', {
         method: 'POST',
@@ -71,46 +147,221 @@ function HomePage() {
         },
         body: JSON.stringify(studentProfile),
       });
-  
+
       if (!res.ok) {
         throw new Error(`Error: ${res.statusText}`);
       }
-  
+
       const data = await res.json();
-
-      if (Array.isArray(data)) {
-        setSearchResults(data); 
-      } else {
-        setSearchResults([]); 
-      }
-
+      setSearchResults(Array.isArray(data) ? data : []);
       setPreviousPrompts([...previousPrompts, searchParams]);
       setIsSearching(false);
     } catch (error) {
       console.error('Error during search request:', error);
     }
-  };  
-
-  if (previousPrompts.length === 0 && !isSearching) {
-    return (
-      <div className="home-container">
-        <h2 className="home-title">Welcome to the Collease</h2>
-        <p>No previous search prompts found.</p>
-        <button className="new-search-button" onClick={() => setIsSearching(true)}>
-          Start New College Search
-        </button>
-      </div>
-    );
-  }
+  };
 
   return (
     <div className="home-container">
-      <h2 className="home-title">Home Page</h2>
+      <h2 className="home-title">Find Colleges</h2>
 
       {isSearching ? (
         <div className="form-container">
-          <h3 className="home-subtitle">Search for Colleges</h3>
+          <h3>Search for Colleges</h3>
           <form onSubmit={handleSearch}>
+            {/* GPA, SAT, ACT */}
+            <div>
+              <label>GPA:</label>
+              <input
+                type="text"
+                name="gpa"
+                value={searchParams.gpa}
+                onChange={handleInputChange}
+                placeholder="Enter your GPA"
+                required
+              />
+              <label>SAT Score:</label>
+              <input
+                type="text"
+                name="satScore"
+                value={searchParams.satScore}
+                onChange={handleInputChange}
+                placeholder="Enter SAT score"
+              />
+              <label>ACT Score:</label>
+              <input
+                type="text"
+                name="actScore"
+                value={searchParams.actScore}
+                onChange={handleInputChange}
+                placeholder="Enter ACT score"
+              />
+            </div>
+
+            {/* AP Scores */}
+            <div>
+              <h4>AP Scores</h4>
+              {searchParams.apScores.map((ap, index) => (
+                <div key={index}>
+                  <input
+                    type="text"
+                    value={ap.name}
+                    placeholder="AP Subject"
+                    onChange={(e) => handleApScoreChange(index, 'name', e.target.value)}
+                  />
+                  <select
+                    value={ap.score}
+                    onChange={(e) => handleApScoreChange(index, 'score', e.target.value)}
+                  >
+                    {[1, 2, 3, 4, 5].map((score) => (
+                      <option key={score} value={score}>
+                        {score}
+                      </option>
+                    ))}
+                  </select>
+                  <button type="button" onClick={() => removeApScore(index)}>
+                    Remove AP Score
+                  </button>
+                </div>
+              ))}
+              <button type="button" onClick={addApScore}>
+                Add AP Score
+              </button>
+            </div>
+
+            {/* Projects */}
+            <div>
+              <h4>Projects</h4>
+              {searchParams.projects.map((project, index) => (
+                <div key={index}>
+                  <input
+                    type="text"
+                    value={project.name}
+                    placeholder="Project Name"
+                    onChange={(e) => {
+                      const updatedProjects = [...searchParams.projects];
+                      updatedProjects[index].name = e.target.value;
+                      setSearchParams({ ...searchParams, projects: updatedProjects });
+                    }}
+                  />
+                  <textarea
+                    value={project.description}
+                    placeholder="Project Description"
+                    onChange={(e) => {
+                      const updatedProjects = [...searchParams.projects];
+                      updatedProjects[index].description = e.target.value;
+                      setSearchParams({ ...searchParams, projects: updatedProjects });
+                    }}
+                  />
+                  <label>Start Date:</label>
+                  <input
+                    type="date"
+                    value={project.startDate}
+                    onChange={(e) => {
+                      const updatedProjects = [...searchParams.projects];
+                      updatedProjects[index].startDate = e.target.value;
+                      setSearchParams({ ...searchParams, projects: updatedProjects });
+                    }}
+                  />
+                  <label>End Date:</label>
+                  <input
+                    type="date"
+                    value={project.endDate}
+                    onChange={(e) => {
+                      const updatedProjects = [...searchParams.projects];
+                      updatedProjects[index].endDate = e.target.value;
+                      setSearchParams({ ...searchParams, projects: updatedProjects });
+                    }}
+                  />
+                  <button type="button" onClick={() => removeProject(index)}>
+                    Remove Project
+                  </button>
+                </div>
+              ))}
+              <button type="button" onClick={addProject}>
+                Add Another Project
+              </button>
+            </div>
+
+            {/* Jobs */}
+            <div>
+              <h4>Work Experience</h4>
+              {searchParams.jobs.map((job, index) => (
+                <div key={index}>
+                  <input
+                    type="text"
+                    value={job.title}
+                    placeholder="Job Title"
+                    onChange={(e) => {
+                      const updatedJobs = [...searchParams.jobs];
+                      updatedJobs[index].title = e.target.value;
+                      setSearchParams({ ...searchParams, jobs: updatedJobs });
+                    }}
+                  />
+                  <textarea
+                    value={job.description}
+                    placeholder="Job Description"
+                    onChange={(e) => {
+                      const updatedJobs = [...searchParams.jobs];
+                      updatedJobs[index].description = e.target.value;
+                      setSearchParams({ ...searchParams, jobs: updatedJobs });
+                    }}
+                  />
+                  <label>Start Date:</label>
+                  <input
+                    type="date"
+                    value={job.startDate}
+                    onChange={(e) => {
+                      const updatedJobs = [...searchParams.jobs];
+                      updatedJobs[index].startDate = e.target.value;
+                      setSearchParams({ ...searchParams, jobs: updatedJobs });
+                    }}
+                  />
+                  <label>End Date:</label>
+                  <input
+                    type="date"
+                    value={job.endDate}
+                    onChange={(e) => {
+                      const updatedJobs = [...searchParams.jobs];
+                      updatedJobs[index].endDate = e.target.value;
+                      setSearchParams({ ...searchParams, jobs: updatedJobs });
+                    }}
+                  />
+                  <button type="button" onClick={() => removeJob(index)}>
+                    Remove Job
+                  </button>
+                </div>
+              ))}
+              <button type="button" onClick={addJob}>
+                Add Another Job
+              </button>
+            </div>
+
+            {/* Skills */}
+            <div>
+              <h4>Skills</h4>
+              <input
+                type="text"
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+                placeholder="Enter your skills"
+              />
+              <button type="button" onClick={handleSkillAdd}>
+                Add Skill
+              </button>
+              <div>
+                {searchParams.skills.map((skill, index) => (
+                  <div key={index}>
+                    <span>{skill}</span>
+                    <button type="button" onClick={() => handleSkillRemove(skill)}>
+                      Remove Skill
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Degree, School Size, City, State */}
             <div>
               <label>Degree:</label>
               <select
@@ -126,9 +377,7 @@ function HomePage() {
                   </option>
                 ))}
               </select>
-            </div>
 
-            <div>
               <label>School Size:</label>
               <select
                 name="schoolSize"
@@ -143,80 +392,39 @@ function HomePage() {
                   </option>
                 ))}
               </select>
-            </div>
 
-            {/* City and State Fields */}
-            <div className="location-container">
-              <div className="location-field-group">
-                <div className="location-field">
-                  <label>City (Optional):</label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={searchParams.city}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Los Angeles"
-                  />
-                </div>
-                <div className="location-field">
-                  <label>State (Optional):</label>
-                  <input
-                    type="text"
-                    name="state"
-                    value={searchParams.state}
-                    onChange={handleInputChange}
-                    placeholder="e.g. CA"
-                  />
-                </div>
-              </div>
-              <p className="form-info">
-                * If you choose a city and state, the search will try to find schools based on that area.
-              </p>
-            </div>
-
-            {/* Interests Section */}
-            <div className="interests-section">
-              <h3>Interests:</h3>
+              <label>City:</label>
               <input
                 type="text"
-                value={newInterest}
-                onChange={(e) => setNewInterest(e.target.value)}
-                placeholder="Add a new interest"
+                name="city"
+                value={searchParams.city}
+                onChange={handleInputChange}
+                placeholder="Enter your city"
               />
-              <button type="button" onClick={handleInterestAdd}>Add Interest</button>
-              
-              {/* Display added interests */}
-              <div className="interests-list">
-                {searchParams.interests.map((interest, index) => (
-                  <div key={index} className="interest-item">
-                    <span>{interest}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleInterestRemove(interest)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
+
+              <label>State:</label>
+              <input
+                type="text"
+                name="state"
+                value={searchParams.state}
+                onChange={handleInputChange}
+                placeholder="Enter your state"
+              />
             </div>
 
-            {/* Buttons */}
-            <div className="button-group">
+            {/* Search and Cancel Buttons */}
+            <div>
               <button type="submit">Search</button>
-              <button
-                type="button"
-                className="cancel-button"
-                onClick={() => setIsSearching(false)}
-              >
+              <button type="button" onClick={() => setIsSearching(false)}>
                 Cancel
               </button>
             </div>
           </form>
         </div>
       ) : (
-        <div className="prompts-container">
-          <h3>Previous Search Prompts</h3>
+        <div>
+          <button onClick={() => setIsSearching(true)}>Start New College Search</button>
+          {/* Display previous searches and results */}
           <div className="prompts-list">
             {previousPrompts.map((prompt, index) => (
               <div key={index} className="prompt-item">
@@ -227,11 +435,6 @@ function HomePage() {
               </div>
             ))}
           </div>
-          <button className="new-search-button" onClick={() => setIsSearching(true)}>
-            Start New College Search
-          </button>
-
-          {/* Display Search Results */}
           <div className="search-results">
             <h3>Search Results</h3>
             {Array.isArray(searchResults) && searchResults.length > 0 ? (
