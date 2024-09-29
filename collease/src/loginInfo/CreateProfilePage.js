@@ -55,53 +55,45 @@ function CreateProfilePage({ setAuth }) {
       return;
     }
   
-    // Prepare the transcript data
     const transcript = coursesByYear.reduce((acc, year) => {
       year.courses.forEach((course) => {
         acc.push([course.name, course.grade, parseInt(year.year.replace('Year ', ''))]);
       });
       return acc;
     }, []);
-  
-    // Prepare the AP scores
+
     const AP_scores = apScores.map((ap) => [ap.name, parseInt(ap.score, 10)]);
   
-    // Prepare the location data (assuming address contains city and state)
     const addressParts = address.split(',').map((part) => part.trim());
     const city = addressParts[0] || '';
     const state = addressParts[1] || '';
   
-    // Prepare the student profile data
     const studentProfile = {
       username,
       password,
-      transcript, // Array of [subject, grade, year]
+      transcript, 
       gpa: parseFloat(gpa),
       SAT: satScore ? parseInt(satScore, 10) : null,
       ACT: actScore ? parseInt(actScore, 10) : null,
       AP_scores,
       location: [city, state],
-      interests: skills, // Assuming skills represent interests
+      interests: skills,
     };
   
     console.log('Student Profile Data:', studentProfile);
-  
-    // Optionally store data in localStorage (or another client-side storage)
     localStorage.setItem('studentProfile', JSON.stringify(studentProfile));
   
-    // Navigate to the home page or other logic
     setAuth(true);
     navigate('/home');
   };  
 
-  // Handle file uploads
   const handleTranscriptUpload = (e) => {
     const file = e.target.files[0];
     if (file && (file.type === 'application/pdf' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
       setTranscriptFile(file);
     } else {
       alert('Only PDF or DOCX files are allowed for transcripts.');
-      e.target.value = ''; // Reset the input field
+      e.target.value = ''; 
     }
   };
 
@@ -111,15 +103,13 @@ function CreateProfilePage({ setAuth }) {
       setResumeFile(file);
     } else {
       alert('Only PDF or DOCX files are allowed for resumes.');
-      e.target.value = ''; // Reset the input field
+      e.target.value = '';
     }
   };
 
-  // Clear file
   const clearTranscriptFile = () => setTranscriptFile(null);
   const clearResumeFile = () => setResumeFile(null);
 
-  // Add and remove years of courses
   const addYear = () => {
     const newYear = `Year ${coursesByYear.length + 1}`;
     setCoursesByYear([...coursesByYear, { year: newYear, courses: [{ name: '', grade: 'A+' }] }]);
