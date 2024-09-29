@@ -29,7 +29,7 @@ function HomePage() {
   // Function to fetch previous college results from the backend
   const fetchPreviousResults = async () => {
     try {
-      const res = await fetch('http://localhost:5001/api/college-results');
+      const res = await fetch('http://localhost:5001/api/college-data');
       if (!res.ok) {
         throw new Error('Failed to fetch previous results');
       }
