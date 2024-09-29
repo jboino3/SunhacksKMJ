@@ -1,8 +1,7 @@
-// LoginPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './LoginPage.css'; // Import the CSS file
-import logo from '../Images/ColleaseLogo.png'; // Adjust path accordingly
+import './LoginPage.css';
+import logo from '../Images/ColleaseLogo.png'; 
 
 function LoginPage({ setAuth }) {
   const [username, setUsername] = useState('');
@@ -22,7 +21,7 @@ function LoginPage({ setAuth }) {
 
   return (
     <div className="login-container">
-      <div className="background-overlay"></div> {/* Parallax background */}
+      <div className="background-overlay"></div> 
       <div className="login-box">
         <img src={logo} alt="Collease Logo" className="logo" />
         <h2>Collease</h2>
