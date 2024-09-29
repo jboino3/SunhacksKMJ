@@ -15,16 +15,16 @@ provider "aws" {
 
 # VPC
 resource "aws_vpc" "open_web_ui" {
-  cidr_block = "10.0.0.0/16"
-  enable_dns_support = true
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
   enable_dns_hostnames = true
 }
 
 # Subnet
 resource "aws_subnet" "subnet" {
-  cidr_block = cidrsubnet(aws_vpc.open_web_ui.cidr_block, 3, 1)
-  vpc_id = aws_vpc.open_web_ui.id
-  availability_zone = "us-east-1a"
+  cidr_block          = cidrsubnet(aws_vpc.open_web_ui.cidr_block, 3, 1)
+  vpc_id              = aws_vpc.open_web_ui.id
+  availability_zone   = "us-east-1a"
 }
 
 # Internet Gateway
@@ -70,18 +70,18 @@ resource "aws_security_group" "ssh" {
 # Key Pair
 resource "aws_key_pair" "open_web_ui" {
   key_name   = "open_web_ui"
-  public_key = file("id_rsa")
+  public_key = file("id_rsa.pub")  # Make sure to specify .pub for the public key
 }
 
 # Spot Instance
 resource "aws_spot_instance_request" "open_web_ui" {
-  ami                    = data.aws_ami.debian.id
-  instance_type         = "t2.micro"
-  associate_public_ip_address = true
-  key_name              = aws_key_pair.open_web_ui.key_name
-  vpc_security_group_ids = [aws_security_group.ssh.id]
-  subnet_id             = aws_subnet.subnet.id
-  wait_for_fulfillment  = true
+  ami                          = data.aws_ami.debian.id
+  instance_type               = "t2.micro"
+  associate_public_ip_address  = true
+  key_name                    = aws_key_pair.open_web_ui.key_name
+  vpc_security_group_ids      = [aws_security_group.ssh.id]
+  subnet_id                   = aws_subnet.subnet.id
+  wait_for_fulfillment        = true
 }
 
 # AMI Data Source
@@ -102,20 +102,43 @@ data "aws_ami" "debian" {
 
 # Random String for S3 Bucket Name
 resource "random_string" "unique_suffix" {
-  length  = 6
+  length  = 8
   special = false
 }
 
-# S3 Bucket for Static Website
+# S3 Bucket
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = "Collease-${random_string.unique_suffix.result}"  # Change to a unique name
-  acl    = "public-read"
+  bucket = "colleasehackathon24${random_string.unique_suffix.result}"  # No hyphen before random string
 
+  # Website configuration
   website {
     index_document = "index.html"
     error_document = "error.html"
   }
 }
+
+resource "aws_s3_bucket_website_configuration" "website" {
+  bucket = aws_s3_bucket.website_bucket.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "error.html"
+  }
+}
+
+
+resource "aws_s3_bucket_public_access_block" "website_bucket_block" {
+  bucket = aws_s3_bucket.website_bucket.id
+
+  block_public_acls       = true
+  ignore_public_acls      = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+}
+
 
 # Upload Website Files to S3 Bucket
 locals {
@@ -128,15 +151,14 @@ locals {
   ]
 }
 
-resource "aws_s3_bucket_object" "website_files" {
+resource "aws_s3_object" "website_files" {
   for_each = { for file in local.website_files : file => file }
 
-  bucket = aws_s3_bucket.website_bucket.bucket
+  bucket = aws_s3_bucket.website_bucket.id
   key    = each.value
   source = "${path.module}/collease/${each.value}"
-  acl    = "public-read"
+  # Removed the ACL as it's not needed with the current bucket settings
 }
-
 
 # Outputs
 output "public_ip" {
@@ -144,8 +166,10 @@ output "public_ip" {
 }
 
 output "s3_website_url" {
-  value = aws_s3_bucket.website_bucket.website_endpoint
+  value = "http://${aws_s3_bucket.website_bucket.id}.s3-website-${data.aws_region.current.name}.amazonaws.com/"
 }
+
+data "aws_region" "current" {}
 
 # Variables
 variable "aws_access_key" {}
