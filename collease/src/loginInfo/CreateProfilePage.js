@@ -47,7 +47,7 @@ function CreateProfilePage({ setAuth }) {
     }
   }, []);
 
-  const handleCreateProfile = async (e) => {
+  const handleCreateProfile = (e) => {
     e.preventDefault();
   
     if (password !== confirmPassword) {
@@ -71,45 +71,27 @@ function CreateProfilePage({ setAuth }) {
     const city = addressParts[0] || '';
     const state = addressParts[1] || '';
   
-    // Prepare the student profile data matching server expectations
+    // Prepare the student profile data
     const studentProfile = {
+      username,
+      password,
       transcript, // Array of [subject, grade, year]
       gpa: parseFloat(gpa),
       SAT: satScore ? parseInt(satScore, 10) : null,
       ACT: actScore ? parseInt(actScore, 10) : null,
-      testScore: null, // This will be computed on the server
       AP_scores,
       location: [city, state],
       interests: skills, // Assuming skills represent interests
-      degree_preferences: [], // Collect this from the user
-      school_size: '', // Collect this from the user
     };
   
     console.log('Student Profile Data:', studentProfile);
   
-    try {
-      // Send a POST request to the backend with the studentProfile data
-      const res = await fetch('http://localhost:5000/api/college-data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(studentProfile),
-      });
+    // Optionally store data in localStorage (or another client-side storage)
+    localStorage.setItem('studentProfile', JSON.stringify(studentProfile));
   
-      if (!res.ok) {
-        throw new Error(`Error: ${res.statusText}`);
-      }
-  
-      const data = await res.json();
-      console.log('Response from server:', data);
-  
-      // Navigate to the home page or handle the response as needed
-      setAuth(true);
-      navigate('/home');
-    } catch (error) {
-      console.error('Error creating profile:', error);
-    }
+    // Navigate to the home page or other logic
+    setAuth(true);
+    navigate('/home');
   };  
 
   // Handle file uploads
