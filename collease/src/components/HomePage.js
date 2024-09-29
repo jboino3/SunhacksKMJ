@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './HomePage.css';
 import collegeMajors from './collegeMajor';
 
@@ -24,6 +24,26 @@ function HomePage() {
   const [newSkill, setNewSkill] = useState('');
   const [searchResults, setSearchResults] = useState([]); // Store the search results
   const [testScore, setTestScore] = useState(null); // Store the test score from the backend
+  const [collegeResults, setCollegeResults] = useState([]); // Store the results from GET request
+
+  // Function to fetch previous college results from the backend
+  const fetchPreviousResults = async () => {
+    try {
+      const res = await fetch('http://localhost:5001/api/college-results');
+      if (!res.ok) {
+        throw new Error('Failed to fetch previous results');
+      }
+      const data = await res.json();
+      setCollegeResults(data); // Update state with the data from the GET request
+    } catch (error) {
+      console.error('Error fetching previous results:', error);
+    }
+  };
+
+  // Use useEffect to fetch previous results when the component mounts
+  useEffect(() => {
+    fetchPreviousResults();
+  }, []);
 
   const schoolSizeOptions = [
     { label: 'Small (1-1,000 students)', value: 'Small' },
@@ -546,6 +566,21 @@ function HomePage() {
               </ul>
             ) : (
               <p>No search results found.</p>
+            )}
+
+            {/* Display the fetched previous results */}
+            <h3>Previous Results</h3>
+            {collegeResults.length > 0 ? (
+              <ul>
+                {collegeResults.map((college, index) => (
+                  <li key={index}>
+                    {`${college.name} - ${college.location}`}
+                    <p>Test Score: {college.test}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No previous results available.</p>
             )}
           </div>
         </div>
