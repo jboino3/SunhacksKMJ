@@ -46,11 +46,32 @@ function HomePage() {
     });
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    console.log('Searching for colleges with these parameters:', searchParams);
-    setPreviousPrompts([...previousPrompts, searchParams]);
-    setIsSearching(false);
+    
+    try {
+      // Send the searchParams object via a POST request
+      const res = await fetch('http://localhost:5000/api/college-search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(searchParams), // Sending the searchParams data
+      });
+
+      if (!res.ok) {
+        throw new Error(`Error: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      console.log('Search Results:', data);
+
+      // Save the search data into previousPrompts
+      setPreviousPrompts([...previousPrompts, searchParams]);
+      setIsSearching(false);
+    } catch (error) {
+      console.error('Error during search request:', error);
+    }
   };
 
   if (previousPrompts.length === 0 && !isSearching) {
@@ -163,14 +184,17 @@ function HomePage() {
               </div>
             </div>
 
-            <button type="submit">Search</button>
-            <button
-              type="button"
-              className="cancel-button"
-              onClick={() => setIsSearching(false)}
-            >
-              Cancel
-            </button>
+            {/* Buttons */}
+            <div className="button-group">
+              <button type="submit">Search</button>
+              <button
+                type="button"
+                className="cancel-button"
+                onClick={() => setIsSearching(false)}
+              >
+                Cancel
+              </button>
+            </div>
           </form>
         </div>
       ) : (
