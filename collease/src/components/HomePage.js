@@ -26,24 +26,19 @@ function HomePage() {
   const [testScore, setTestScore] = useState(null); // Store the test score from the backend
   const [collegeResults, setCollegeResults] = useState([]); // Store the results from GET request
 
-  // Function to fetch previous college results from the backend
-  const fetchPreviousResults = async () => {
+  // Function to fetch college results after the POST request
+  const fetchCollegeResults = async () => {
     try {
       const res = await fetch('http://localhost:5001/api/college-data');
       if (!res.ok) {
-        throw new Error('Failed to fetch previous results');
+        throw new Error('Failed to fetch college results');
       }
       const data = await res.json();
-      setCollegeResults(data); 
+      setCollegeResults(data);
     } catch (error) {
-      console.error('Error fetching previous results:', error);
+      console.error('Error fetching college results:', error);
     }
   };
-
-  // Use useEffect to fetch previous results when the component mounts
-  useEffect(() => {
-    fetchPreviousResults();
-  }, []);
 
   const schoolSizeOptions = [
     { label: 'Small (1-1,000 students)', value: 'Small' },
@@ -211,8 +206,9 @@ function HomePage() {
       // Store the test score in the state
       setTestScore(data.test);
 
-      // Update the state based on the results
-      setSearchResults(Array.isArray(data) ? data : []);
+      // Fetch updated results after successful POST
+      await fetchCollegeResults();
+
       setPreviousPrompts([...previousPrompts, searchParams]);
       setIsSearching(false);
     } catch (error) {
