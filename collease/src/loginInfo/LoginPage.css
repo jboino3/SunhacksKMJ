@@ -1,74 +1,78 @@
-/* Style for the login page */
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #121212 0%, #1E1E1E 100%);
-    color: #E0E0E0;
-  }
-  
-  .login-container {
+/* Container for the login page */
+.login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 20px;
-  }
-  
-  .login-box {
+}
+
+/* Login Box Style */
+.login-box {
     background-color: #1E1E1E;
     padding: 40px;
     border-radius: 15px;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
     max-width: 400px;
     width: 100%;
+    position: relative; /* Ensures the logo is positioned relative to the box */
     transition: transform 0.2s ease-in-out, background-color 0.3s ease;
-  }
-  
-  .login-box:hover {
+}
+
+.login-box:hover {
     transform: scale(1.02);
     background-color: #2A2A2A;
-  }
-  
-  h2 {
-    text-align: center;
-    margin-bottom: 10px;
+}
+
+/* Centered Title */
+h2 {
     font-size: 28px;
     color: #2196F3; /* Blue heading */
-  }
-  
-  .login-text {
+    text-align: center;
+    margin: 0;
+}
+
+/* Logo Positioned to the Right */
+.logo {
+    position: absolute;
+    top: 20px;  /* Adjust to align vertically */
+    right: 20px;  /* Align to the right edge */
+    width: 50px;
+    height: 50px;
+}
+
+/* Rest of the Styles */
+.login-text {
     text-align: center;
     margin-bottom: 20px;
     font-size: 16px;
     color: #B0BEC5;
-  }
-  
-  .error-text {
+}
+
+.error-text {
     text-align: center;
     color: red;
     margin-bottom: 15px;
-  }
-  
-  .login-form {
+}
+
+.login-form {
     display: flex;
     flex-direction: column;
-  }
-  
-  .input-group {
+}
+
+.input-group {
     margin-bottom: 15px;
     text-align: left;
-  }
-  
-  .input-group label {
+}
+
+.input-group label {
     display: block;
     font-size: 14px;
     color: #E0E0E0;
     margin-bottom: 5px;
-  }
-  
-  .input-group input {
+}
+
+.input-group input {
     width: 100%;
     padding: 12px;
     border: 2px solid #424242;
@@ -77,14 +81,14 @@ body {
     background-color: #333;
     color: white;
     transition: border-color 0.3s;
-  }
-  
-  .input-group input:focus {
+}
+
+.input-group input:focus {
     border-color: #2196F3; /* Blue border on focus */
     outline: none;
-  }
-  
-  .login-button {
+}
+
+.login-button {
     background-color: #2196F3;
     color: white;
     padding: 12px;
@@ -94,40 +98,44 @@ body {
     cursor: pointer;
     transition: background-color 0.3s, box-shadow 0.3s;
     box-shadow: 0px 4px 12px rgba(33, 150, 243, 0.3); /* Blue shadow */
-  }
-  
-  .login-button:hover {
+}
+
+.login-button:hover {
     background-color: #0056b3;
     box-shadow: 0px 6px 15px rgba(33, 150, 243, 0.5);
-  }
-  
-  .create-profile-button {
+}
+
+.create-profile-button {
     margin-top: 10px;
     background-color: transparent;
-    color: white; /* Set text color to white */
+    color: white;
     border: none;
     cursor: pointer;
     font-size: 14px;
     text-align: center;
-  }
-  
-  .create-profile-button:hover {
+}
+
+.create-profile-button:hover {
     text-decoration: underline;
     color: #2196F3; /* Blue color on hover */
-  }
-  
-  @media (max-width: 600px) {
+}
+
+@media (max-width: 600px) {
     .login-box {
-      padding: 20px;
+        padding: 20px;
     }
-  
+
     .input-group input {
-      font-size: 14px;
-      padding: 10px;
+        font-size: 14px;
+        padding: 10px;
     }
-  
+
     .login-button, .create-profile-button {
-      font-size: 14px;
+        font-size: 14px;
     }
-  }
-  
+
+    .logo {
+        width: 40px;
+        height: 40px;
+    }
+}
