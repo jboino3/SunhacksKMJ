@@ -90,7 +90,7 @@ function HomePage() {
   if (previousPrompts.length === 0 && !isSearching) {
     return (
       <div className="home-container">
-        <h2 className="home-title">Welcome to the College Search App</h2>
+        <h2 className="home-title">Welcome to the Collease</h2>
         <p>No previous search prompts found.</p>
         <button className="new-search-button" onClick={() => setIsSearching(true)}>
           Start New College Search
