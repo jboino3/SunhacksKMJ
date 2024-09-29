@@ -5,6 +5,7 @@ import LoginPage from './loginInfo/LoginPage';
 import CreateProfilePage from './loginInfo/CreateProfilePage';
 import HomePage from './components/HomePage';
 
+/*
 function App() {
   // Initialize isAuthenticated based on localStorage or set to false
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -73,9 +74,9 @@ function App() {
 }
 
 export default App;
+*/
 
 
-/*
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem('isAuthenticated') === 'true' || false
@@ -122,4 +123,3 @@ function App() {
 }
 
 export default App;
-*/

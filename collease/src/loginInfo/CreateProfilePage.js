@@ -6,7 +6,7 @@ function CreateProfilePage({ setAuth }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [address, setAddress] = useState(''); 
+  const [address, setAddress] = useState('');
   const [gpa, setGpa] = useState('');
   const [school, setSchool] = useState('');
   const [satScore, setSatScore] = useState('');
@@ -14,6 +14,7 @@ function CreateProfilePage({ setAuth }) {
   const [transcriptFile, setTranscriptFile] = useState(null);
   const [resumeFile, setResumeFile] = useState(null);
   const [coursesByYear, setCoursesByYear] = useState([{ year: 'Year 1', courses: [{ name: '', grade: 'A+' }] }]);
+  const [apScores, setApScores] = useState([{ name: '', score: '1' }]);
   const [projects, setProjects] = useState([{ name: '', description: '', startDate: '', endDate: '' }]);
   const [jobs, setJobs] = useState([{ title: '', description: '', startDate: '', endDate: '' }]);
   const [skills, setSkills] = useState([]);
@@ -21,7 +22,7 @@ function CreateProfilePage({ setAuth }) {
 
   // Fetch reverse geocoded address from Google Maps API
   const getAddressFromCoordinates = async (latitude, longitude) => {
-    const apiKey = 'AIzaSyBLCsA4QiStmcOYb1kMl8AQsxGCpNY5rJc'; 
+    const apiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // Replace with your actual Google Maps API key
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
     
     try {
@@ -52,15 +53,35 @@ function CreateProfilePage({ setAuth }) {
       alert('Passwords do not match');
       return;
     }
-    
-    // Validation before submission
-    if (username && password && gpa && school && address) {
-      setAuth(true); 
-      // Submit all form data to your server or state management system
-      navigate('/home'); 
-    } else {
-      alert('Please complete all required fields, including address.');
-    }
+
+    // Prepare the transcript data
+    const transcript = coursesByYear.reduce((acc, year) => {
+      year.courses.forEach((course) => {
+        acc.push([course.name, course.grade, year.year.replace('Year ', '')]);
+      });
+      return acc;
+    }, []);
+
+    const profileData = {
+      username,
+      password,
+      gpa,
+      school,
+      satScore,
+      actScore,
+      AP_scores: apScores.map((ap) => [ap.name, ap.score]),
+      transcript,
+      projects,
+      jobs,
+      skills,
+      address,
+    };
+
+    console.log('Profile Data:', profileData);
+
+    // Submit profile data to the backend (e.g., POST request)
+    setAuth(true);
+    navigate('/home');
   };
 
   // Handle file uploads
@@ -98,7 +119,6 @@ function CreateProfilePage({ setAuth }) {
     setCoursesByYear(coursesByYear.filter((_, i) => i !== index));
   };
 
-  // Add course manually
   const addCourseToYear = (yearIndex) => {
     const updatedYears = [...coursesByYear];
     updatedYears[yearIndex].courses.push({ name: '', grade: 'A+' });
@@ -109,6 +129,21 @@ function CreateProfilePage({ setAuth }) {
     const updatedYears = [...coursesByYear];
     updatedYears[yearIndex].courses = updatedYears[yearIndex].courses.filter((_, i) => i !== courseIndex);
     setCoursesByYear(updatedYears);
+  };
+
+  // Add AP Scores
+  const addApScore = () => {
+    setApScores([...apScores, { name: '', score: '1' }]);
+  };
+
+  const removeApScore = (index) => {
+    setApScores(apScores.filter((_, i) => i !== index));
+  };
+
+  const handleApScoreChange = (index, field, value) => {
+    const updatedApScores = [...apScores];
+    updatedApScores[index][field] = value;
+    setApScores(updatedApScores);
   };
 
   // Add and remove project manually
@@ -202,77 +237,94 @@ function CreateProfilePage({ setAuth }) {
               placeholder="Enter ACT score"
             />
 
-            {/* Transcript Upload or Manual Entry */}
+            {/* Transcript (Manually Enter Classes and Grades by Year) */}
             <div>
               <h4>Transcript</h4>
-              <label>Upload Transcript (PDF or DOCX only):</label>
-              <input type="file" onChange={handleTranscriptUpload} accept=".pdf,.doc,.docx" />
-              {transcriptFile && (
-                <div>
-                  <p>Uploaded File: {transcriptFile.name}</p>
-                  <button type="button" onClick={clearTranscriptFile}>Remove Transcript</button>
+              {coursesByYear.map((year, yearIndex) => (
+                <div key={yearIndex} className="year-section">
+                  <h5>{year.year}</h5>
+                  {year.courses.map((course, courseIndex) => (
+                    <div key={courseIndex} className="class-grade-container">
+                      <input
+                        type="text"
+                        value={course.name}
+                        placeholder="Class Name"
+                        onChange={(e) => {
+                          const updatedCourses = [...coursesByYear];
+                          updatedCourses[yearIndex].courses[courseIndex].name = e.target.value;
+                          setCoursesByYear(updatedCourses);
+                        }}
+                      />
+                      <select
+                        value={course.grade}
+                        onChange={(e) => {
+                          const updatedCourses = [...coursesByYear];
+                          updatedCourses[yearIndex].courses[courseIndex].grade = e.target.value;
+                          setCoursesByYear(updatedCourses);
+                        }}
+                      >
+                        <option value="A+">A+</option>
+                        <option value="A">A</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B">B</option>
+                        <option value="B-">B-</option>
+                        <option value="C+">C+</option>
+                        <option value="C">C</option>
+                        <option value="C-">C-</option>
+                        <option value="D+">D+</option>
+                        <option value="D">D</option>
+                        <option value="D-">D-</option>
+                        <option value="F">F</option>
+                      </select>
+                      <button type="button" className="remove-button" onClick={() => removeCourseFromYear(yearIndex, courseIndex)}>
+                        Remove Class
+                      </button>
+                    </div>
+                  ))}
+                  <button type="button" className="add-button" onClick={() => addCourseToYear(yearIndex)}>
+                    Add Another Class for {year.year}
+                  </button>
+                  <button type="button" className="remove-button" onClick={() => removeYear(yearIndex)}>
+                    Remove {year.year}
+                  </button>
                 </div>
-              )}
+              ))}
+              <button type="button" className="add-button" onClick={addYear}>
+                Add Another Year
+              </button>
             </div>
+          </div>
 
-            {!transcriptFile && (
-              <div>
-                <h4>Manually Enter Classes and Grades by Year</h4>
-                {coursesByYear.map((year, yearIndex) => (
-                  <div key={yearIndex} className="year-section">
-                    <h5>{year.year}</h5>
-                    {year.courses.map((course, courseIndex) => (
-                      <div key={courseIndex} className="class-grade-container">
-                        <input
-                          type="text"
-                          value={course.name}
-                          placeholder="Class Name"
-                          onChange={(e) => {
-                            const updatedCourses = [...coursesByYear];
-                            updatedCourses[yearIndex].courses[courseIndex].name = e.target.value;
-                            setCoursesByYear(updatedCourses);
-                          }}
-                        />
-                        <select
-                          value={course.grade}
-                          onChange={(e) => {
-                            const updatedCourses = [...coursesByYear];
-                            updatedCourses[yearIndex].courses[courseIndex].grade = e.target.value;
-                            setCoursesByYear(updatedCourses);
-                          }}
-                        >
-                          <option value="A+">A+</option>
-                          <option value="A">A</option>
-                          <option value="A-">A-</option>
-                          <option value="B+">B+</option>
-                          <option value="B">B</option>
-                          <option value="B-">B-</option>
-                          <option value="C+">C+</option>
-                          <option value="C">C</option>
-                          <option value="C-">C-</option>
-                          <option value="D+">D+</option>
-                          <option value="D">D</option>
-                          <option value="D-">D-</option>
-                          <option value="F">F</option>
-                        </select>
-                        <button type="button" className="remove-button" onClick={() => removeCourseFromYear(yearIndex, courseIndex)}>
-                          Remove Class
-                        </button>
-                      </div>
-                    ))}
-                    <button type="button" className="add-button" onClick={() => addCourseToYear(yearIndex)}>
-                      Add Another Class for {year.year}
-                    </button>
-                    <button type="button" className="remove-button" onClick={() => removeYear(yearIndex)}>
-                      Remove {year.year}
-                    </button>
-                  </div>
-                ))}
-                <button type="button" className="add-button" onClick={addYear}>
-                  Add Another Year
+          {/* AP Scores */}
+          <div className="section">
+            <h3>AP Scores</h3>
+            {apScores.map((ap, index) => (
+              <div key={index} className="class-grade-container">
+                <input
+                  type="text"
+                  placeholder="AP Subject"
+                  value={ap.name}
+                  onChange={(e) => handleApScoreChange(index, 'name', e.target.value)}
+                />
+                <select
+                  value={ap.score}
+                  onChange={(e) => handleApScoreChange(index, 'score', e.target.value)}
+                >
+                  {[1, 2, 3, 4, 5].map((score) => (
+                    <option key={score} value={score}>
+                      {score}
+                    </option>
+                  ))}
+                </select>
+                <button type="button" className="remove-button" onClick={() => removeApScore(index)}>
+                  Remove AP Score
                 </button>
               </div>
-            )}
+            ))}
+            <button type="button" className="add-button" onClick={addApScore}>
+              Add Another AP Score
+            </button>
           </div>
 
           {/* Resume Upload or Manual Entry */}
@@ -425,7 +477,7 @@ function CreateProfilePage({ setAuth }) {
 
           <button type="submit">Create Profile</button>
         </form>
-        
+
         {/* Back to Login button */}
         <button className="back-button" onClick={handleBackToLogin}>
           Back to Login
