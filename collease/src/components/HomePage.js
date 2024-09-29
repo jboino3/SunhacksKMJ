@@ -23,6 +23,7 @@ function HomePage() {
   const [newInterest, setNewInterest] = useState('');
   const [newSkill, setNewSkill] = useState('');
   const [searchResults, setSearchResults] = useState([]); // Store the search results
+  const [testScore, setTestScore] = useState(null); // Store the test score from the backend
 
   const schoolSizeOptions = [
     { label: 'Small (1-1,000 students)', value: 'Small' },
@@ -185,6 +186,12 @@ function HomePage() {
       }
 
       const data = await res.json();
+      console.log('Test value from server:', data.test); // Logging the "test" value
+
+      // Store the test score in the state
+      setTestScore(data.test);
+
+      // Update the state based on the results
       setSearchResults(Array.isArray(data) ? data : []);
       setPreviousPrompts([...previousPrompts, searchParams]);
       setIsSearching(false);
@@ -530,7 +537,11 @@ function HomePage() {
             {Array.isArray(searchResults) && searchResults.length > 0 ? (
               <ul>
                 {searchResults.map((result, index) => (
-                  <li key={index}>{`${result.name} - ${result.location}`}</li>
+                  <li key={index}>
+                    {`${result.name} - ${result.location}`}
+                    {/* Display the test score */}
+                    {testScore !== null && <p>Test Score: {testScore}</p>}
+                  </li>
                 ))}
               </ul>
             ) : (
