@@ -100,9 +100,15 @@ data "aws_ami" "debian" {
   }
 }
 
+# Random String for S3 Bucket Name
+resource "random_string" "unique_suffix" {
+  length  = 6
+  special = false
+}
+
 # S3 Bucket for Static Website
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = "my-unique-website-bucket"  # Change to a unique name
+  bucket = "Collease-${random_string.unique_suffix.result}"  # Change to a unique name
   acl    = "public-read"
 
   website {
