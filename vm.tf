@@ -22,7 +22,7 @@ resource "aws_vpc" "open_web_ui" {
 resource "aws_subnet" "subnet" {
     cidr_block = cidrsubnet(aws_vpc.open_web_ui.cidr_block, 3, 1)
     vpc_id = aws_vpc.open_web_ui.id
-    availability_zone = "us-east-1"
+    availability_zone = "us-east-1a"
 }
 
 resource "aws_internet_gateway" "open_web_ui" {
@@ -64,7 +64,7 @@ resource "aws_security_group" "ssh" {
 
 resource "aws_key_pair" "open_web_ui" {
     key_name = "open_web_ui"
-    public_key = var.aws_access_key
+    public_key = file("~/.ssh/id_rsa.pub")
 }
 
 resource "aws_spot_instance_request" "open_web_ui" {
