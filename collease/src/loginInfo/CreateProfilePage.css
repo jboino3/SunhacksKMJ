@@ -3,61 +3,75 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
-    background-color: #ffffff; /* Set the overall page background to white */
+    background-color: #ffffff;
     color: #E0E0E0;
 }
 
-/* Container styles */
+/* Animated Gradient Background */
 .create-profile-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    background: linear-gradient(270deg, #64B5F6, #81C784, #FFD54F, #FF8A65, #9575CD);
+    background-size: 400% 400%;
+    animation: gradientAnimation 12s ease infinite;
     padding: 20px;
+}
+
+/* Keyframes for gradient background */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* Box styling */
 .create-profile-box {
-    background: #1E1E1E;
+    background: rgba(30, 30, 30, 0.8);
     padding: 40px;
     border-radius: 15px;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
-    max-width: 700px;
+    max-width: 600px;
     width: 100%;
-    transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(5px);
 }
 
 .create-profile-box:hover {
     transform: scale(1.02);
-    background-color: #2A2A2A;
+    box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.7);
 }
 
 /* Headings */
-h2, h3, h4, h5 {
+h2 {
+    color: #64B5F6;
+    font-size: 32px;
     text-align: center;
-    color: #4FC3F7; /* Soft blue */
     margin-bottom: 20px;
     font-family: 'Poppins', sans-serif;
+    text-shadow: 0px 4px 10px rgba(33, 150, 243, 0.3);
 }
 
-h2 {
-    color: #2196F3; /* Primary blue */
-    font-size: 32px;
-}
-
+/* Account Information color updated */
 h3 {
-    color: #81D4FA;
+    color: #ffffff; /* New color for better contrast */
     font-size: 24px;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
-h4, h5 {
-    color: #BBDEFB;
-}
-
-/* General form styles */
+/* Form styles */
 form {
     display: flex;
     flex-direction: column;
+    gap: 20px;
 }
 
 label {
@@ -66,136 +80,65 @@ label {
     color: #E0E0E0;
 }
 
-input, textarea {
+input {
     width: 100%;
     padding: 12px;
     margin-bottom: 20px;
     border: 2px solid #424242;
     border-radius: 10px;
     font-size: 16px;
-    transition: border-color 0.3s ease;
-    outline: none;
     background-color: #333;
     color: white;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-input:focus, textarea:focus {
-    border-color: #2196F3; /* Blue border */
+input:focus {
+    border-color: #64B5F6;
     background-color: #424242;
-}
-
-textarea {
-    min-height: 100px;
+    outline: none;
+    box-shadow: 0px 0px 10px rgba(100, 181, 246, 0.7);
 }
 
 /* Buttons */
 button {
-    background: linear-gradient(90deg, #2196F3, #64B5F6); /* Blue gradient */
+    background: linear-gradient(270deg, #64B5F6, #81C784, #FFD54F, #FF8A65, #9575CD);
+    background-size: 400% 400%;
     color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 20px;
+    padding: 14px;
     font-size: 16px;
+    border: none;
+    border-radius: 25px;
     cursor: pointer;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0px 4px 12px rgba(33, 150, 243, 0.3); /* Blue shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 6px 15px rgba(100, 181, 246, 0.4);
+    animation: gradientAnimation 12s ease infinite; /* Sync button animation with background */
 }
 
 button:hover {
-    background: linear-gradient(90deg, #64B5F6, #2196F3);
-    box-shadow: 0px 6px 15px rgba(33, 150, 243, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0px 10px 20px rgba(100, 181, 246, 0.7);
 }
 
-.add-button {
-    background-color: transparent;
-    color: #FFFFFF;
-    font-size: 14px;
-    margin-top: 5px;
-    font-weight: bold;
-    transition: color 0.2s ease;
-    cursor: pointer;
-}
+/* Media Queries */
+@media (max-width: 600px) {
+    .create-profile-box {
+        padding: 20px;
+    }
 
-.add-button:hover {
-    color: #64B5F6; /* Add a blue hover effect */
-}
+    input {
+        font-size: 14px;
+        padding: 10px;
+    }
 
-/* Project/Job entry styling */
-.project-job-entry {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-    background: #2A2A2A;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    transition: box-shadow 0.3s ease, background-color 0.3s ease;
-}
+    button {
+        font-size: 14px;
+    }
 
-.project-job-entry:hover {
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.7);
-    background-color: #333;
-}
+    h2 {
+        font-size: 28px;
+    }
 
-/* Class and grade container styles */
-.class-grade-container {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.class-grade-container input {
-    width: 60%;
-}
-
-.class-grade-container select {
-    width: 30%;
-    padding: 10px;
-    background-color: #333;
-    color: white;
-    border-radius: 10px;
-    border: 2px solid #424242;
-    font-size: 14px;
-    transition: border-color 0.3s ease;
-}
-
-.class-grade-container select:focus {
-    border-color: #2196F3;
-    background-color: #424242;
-}
-
-/* Remove button */
-.remove-button {
-    background-color: #FF5252;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 10px;
-    margin-top: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.remove-button:hover {
-    background-color: #D32F2F;
-}
-
-/* Back button */
-.back-button {
-    background: #5a5858;
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    margin-top: 20px;
-    max-width: 500px;
-}
-
-.back-button:hover {
-    background: #424242;
-    box-shadow: 0px 6px 15px rgba(97, 97, 97, 0.5);
+    h3 {
+        font-size: 22px;
+    }
 }
