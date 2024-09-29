@@ -13,6 +13,7 @@ function HomePage() {
     interests: [] // New interests field to store user's interests
   });
   const [newInterest, setNewInterest] = useState(''); // Temporary state to add new interests
+  const [searchResults, setSearchResults] = useState([]); // Store the search results
 
   // Updated school size options with specific ranges
   const schoolSizeOptions = [
@@ -48,7 +49,7 @@ function HomePage() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    
+
     try {
       // Send the searchParams object via a POST request
       const res = await fetch('http://localhost:5000/api/college-search', {
@@ -66,8 +67,9 @@ function HomePage() {
       const data = await res.json();
       console.log('Search Results:', data);
 
-      // Save the search data into previousPrompts
+      // Save the search data into previousPrompts and store the result in searchResults
       setPreviousPrompts([...previousPrompts, searchParams]);
+      setSearchResults(data); // Assuming data is the search result from the backend
       setIsSearching(false);
     } catch (error) {
       console.error('Error during search request:', error);
@@ -213,6 +215,16 @@ function HomePage() {
           <button className="new-search-button" onClick={() => setIsSearching(true)}>
             Start New College Search
           </button>
+
+          {/* Display Search Results */}
+          <div className="search-results">
+            <h3>Search Results</h3>
+            <ul>
+              {searchResults.map((result, index) => (
+                <li key={index}>{`${result.name} - ${result.location}`}</li> 
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </div>
