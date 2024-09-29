@@ -5,7 +5,7 @@ import LoginPage from './loginInfo/LoginPage';
 import CreateProfilePage from './loginInfo/CreateProfilePage';
 import HomePage from './components/HomePage';
 
-/*function App() {
+function App() {
   // Initialize isAuthenticated based on localStorage or set to false
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem('isAuthenticated') === 'true' || false
@@ -73,8 +73,9 @@ import HomePage from './components/HomePage';
 }
 
 export default App;
-*/
 
+
+/*
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem('isAuthenticated') === 'true' || false
@@ -111,10 +112,8 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          {/* Force the user to always go to the /home route */}
           <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/create-profile" element={<CreateProfilePage setAuth={handleLogin} />} />
-          {/* Allow everyone to access the home page temporarily */}
           <Route path="/home" element={<HomePage onLogout={handleLogout} />} />
         </Routes>
       </div>
@@ -123,3 +122,4 @@ function App() {
 }
 
 export default App;
+*/
