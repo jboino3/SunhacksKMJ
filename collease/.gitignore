@@ -9,7 +9,7 @@
 /coverage
 
 # production
-/build
+# /build # need this not ignored so people can view the active website (From michael)
 
 # misc
 .DS_Store
