@@ -202,8 +202,7 @@ function HomePage() {
       }
 
       const data = await res.json();
-      console.log('Test value from server:', data.test); // Logging the "test" value
-      setCollegeResponse(data.test)
+      setCollegeResponse(data)
 
       /*
       setCollegeResults(data.test)
@@ -548,7 +547,7 @@ function HomePage() {
                 <p>School Size: {prompt.schoolSize}</p>
                 <p>Location: {prompt.city ? `${prompt.city}, ${prompt.state}` : 'Not specified'}</p>
                 <p>Interests: {prompt.interests.join(', ')}</p>
-                <p>Response: {collegeResponse}</p>
+                <p>University 1: {collegeResponse.University1.Name}</p>
               </div>
             ))}
           </div>
