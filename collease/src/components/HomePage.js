@@ -34,7 +34,7 @@ function HomePage() {
         throw new Error('Failed to fetch previous results');
       }
       const data = await res.json();
-      setCollegeResults(data); // Update state with the data from the GET request
+      setCollegeResults(data); 
     } catch (error) {
       console.error('Error fetching previous results:', error);
     }
@@ -568,7 +568,6 @@ function HomePage() {
               <p>No search results found.</p>
             )}
 
-            {/* Display the fetched previous results */}
             <h3>Previous Results</h3>
             {collegeResults.length > 0 ? (
               <ul>
