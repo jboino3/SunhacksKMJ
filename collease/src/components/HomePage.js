@@ -1,18 +1,149 @@
-import React from 'react';
+import React, { useState } from 'react';
+import './HomePage.css'; // Import the CSS
+import collegeMajors from './collegeMajor'; // Import the sorted list of college majors
 
 function HomePage() {
-  const items = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}`);
+  const [previousPrompts, setPreviousPrompts] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchParams, setSearchParams] = useState({
+    degree: '',
+    schoolSize: '',
+    city: '',
+    state: ''
+  });
+
+  // Updated school size options with specific ranges
+  const schoolSizeOptions = [
+    { label: 'Small (1-1,000 students)', value: 'Small' },
+    { label: 'Medium (1,001-10,000 students)', value: 'Medium' },
+    { label: 'Large (10,001+ students)', value: 'Large' }
+  ];
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setSearchParams({
+      ...searchParams,
+      [name]: value
+    });
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    console.log('Searching for colleges with these parameters:', searchParams);
+    setPreviousPrompts([...previousPrompts, searchParams]);
+    setIsSearching(false);
+  };
+
+  if (previousPrompts.length === 0 && !isSearching) {
+    return (
+      <div className="home-container">
+        <h2 className="home-title">Welcome to the College Search App</h2>
+        <p>No previous search prompts found.</p>
+        <button className="new-search-button" onClick={() => setIsSearching(true)}>
+          Start New College Search
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h2>Home Page</h2>
-      <div style={{ height: '400px', overflowY: 'scroll', border: '1px solid black' }}>
-        {items.map((item, index) => (
-          <div key={index} style={{ padding: '10px', borderBottom: '1px solid gray' }}>
-            {item}
+    <div className="home-container">
+      <h2 className="home-title">Home Page</h2>
+
+      {isSearching ? (
+        <div className="form-container">
+          <h3 className="home-subtitle">Search for Colleges</h3>
+          <form onSubmit={handleSearch}>
+            <div>
+              <label>Degree:</label>
+              <select
+                name="degree"
+                value={searchParams.degree}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select a degree</option>
+                {collegeMajors.map((degree, index) => (
+                  <option key={index} value={degree}>
+                    {degree}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label>School Size:</label>
+              <select
+                name="schoolSize"
+                value={searchParams.schoolSize}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select school size</option>
+                {schoolSizeOptions.map((size, index) => (
+                  <option key={index} value={size.value}>
+                    {size.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* City and State Fields */}
+            <div className="location-container">
+              <div className="location-field-group">
+                <div className="location-field">
+                  <label>City (Optional):</label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={searchParams.city}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Los Angeles"
+                  />
+                </div>
+                <div className="location-field">
+                  <label>State (Optional):</label>
+                  <input
+                    type="text"
+                    name="state"
+                    value={searchParams.state}
+                    onChange={handleInputChange}
+                    placeholder="e.g. CA"
+                  />
+                </div>
+              </div>
+              <p className="form-info">
+                * If you choose a city and state, the search will try to find schools based on that area.
+              </p>
+            </div>
+
+            <button type="submit">Search</button>
+            <button
+              type="button"
+              className="cancel-button"
+              onClick={() => setIsSearching(false)}
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div className="prompts-container">
+          <h3>Previous Search Prompts</h3>
+          <div className="prompts-list">
+            {previousPrompts.map((prompt, index) => (
+              <div key={index} className="prompt-item">
+                <p>Degree: {prompt.degree}</p>
+                <p>School Size: {prompt.schoolSize}</p>
+                <p>Location: {prompt.city ? `${prompt.city}, ${prompt.state}` : 'Not specified'}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          <button className="new-search-button" onClick={() => setIsSearching(true)}>
+            Start New College Search
+          </button>
+        </div>
+      )}
     </div>
   );
 }

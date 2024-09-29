@@ -1,0 +1,191 @@
+/* Container styles */
+.create-profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #121212 0%, #1E1E1E 100%);
+    padding: 20px;
+}
+  
+.create-profile-box {
+    background: #1E1E1E;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
+    max-width: 700px;
+    width: 100%;
+    transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+}
+  
+.create-profile-box:hover {
+    transform: scale(1.02);
+    background-color: #2A2A2A;
+}
+  
+/* Headings */
+h2, h3, h4, h5 {
+    text-align: center;
+    color: #4FC3F7; /* Soft blue */
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+h2 {
+    color: #2196F3; /* Primary blue */
+    font-size: 32px;
+}
+  
+h3 {
+    color: #81D4FA;
+    font-size: 24px;
+}
+  
+h4, h5 {
+    color: #BBDEFB;
+}
+
+/* General form styles */
+form {
+    display: flex;
+    flex-direction: column;
+}
+  
+label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #E0E0E0;
+}
+  
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #424242;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    outline: none;
+    background-color: #333;
+    color: white;
+}
+  
+input:focus, textarea:focus {
+    border-color: #2196F3; /* Blue border */
+    background-color: #424242;
+}
+  
+textarea {
+    min-height: 100px;
+}
+  
+button {
+    background: linear-gradient(90deg, #2196F3, #64B5F6); /* Blue gradient */
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 4px 12px rgba(33, 150, 243, 0.3); /* Blue shadow */
+}
+  
+button:hover {
+    background: linear-gradient(90deg, #64B5F6, #2196F3);
+    box-shadow: 0px 6px 15px rgba(33, 150, 243, 0.5);
+}
+  
+.add-button {
+    background-color: transparent;
+    color: #FFFFFF; /* Change text color to white */
+    font-size: 14px;
+    margin-top: 5px;
+    font-weight: bold; /* Make text bold */
+    transition: color 0.2s ease;
+    cursor: pointer;
+}
+
+.add-button:hover {
+    color: #64B5F6; /* Add a blue hover effect */
+}
+  
+/* Project/Job entry styling */
+.project-job-entry {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    background: #2A2A2A;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+  
+.project-job-entry:hover {
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.7);
+    background-color: #333;
+}
+
+/* Class and grade container styles */
+.class-grade-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.class-grade-container input {
+    width: 60%;
+}
+
+.class-grade-container select {
+    width: 30%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 10px;
+    border: 2px solid #424242;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.class-grade-container select:focus {
+    border-color: #2196F3;
+    background-color: #424242;
+}
+
+/* Remove button */
+.remove-button {
+    background-color: #FF5252;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 10px;
+    margin-top: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.remove-button:hover {
+    background-color: #D32F2F;
+}
+
+/* Back button */
+.back-button {
+    background: #5a5858;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 20px;
+    max-width: 500px;
+}
+
+.back-button:hover {
+    background: #424242;
+    box-shadow: 0px 6px 15px rgba(97, 97, 97, 0.5);
+}
