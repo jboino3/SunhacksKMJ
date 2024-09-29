@@ -286,3 +286,37 @@
 .search-results li:hover {
     background-color: rgba(33, 33, 33, 0.9);
 }
+
+.prompts-list {
+    margin: 20px 0;
+  }
+  
+  .prompt-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+  }
+  
+  .university-list {
+    margin-top: 20px;
+  }
+  
+  .university-card {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+  }
+  
+  .university-card h3 {
+    margin-top: 0;
+    color: #333;
+  }
+  
+  .university-card p {
+    margin: 5px 0;
+    color: #666;
+  }
+  

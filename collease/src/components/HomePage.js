@@ -539,18 +539,31 @@ function HomePage() {
       ) : (
         <div>
           <button onClick={() => setIsSearching(true)}>Start New College Search</button>
-          {/* Display previous searches and results */}
           <div className="prompts-list">
-            {previousPrompts.map((prompt, index) => (
-              <div key={index} className="prompt-item">
-                <p>Degree: {prompt.degree}</p>
-                <p>School Size: {prompt.schoolSize}</p>
-                <p>Location: {prompt.city ? `${prompt.city}, ${prompt.state}` : 'Not specified'}</p>
-                <p>Interests: {prompt.interests.join(', ')}</p>
-                <p>University 1: {collegeResponse.University1.Name}</p>
+  {previousPrompts.map((prompt, index) => (
+    <div key={index} className="prompt-item">
+      <p><strong>Degree:</strong> {prompt.degree}</p>
+      <p><strong>School Size:</strong> {prompt.schoolSize}</p>
+      <p><strong>Location:</strong> {prompt.city ? `${prompt.city}, ${prompt.state}` : 'Not specified'}</p>
+      <p><strong>Interests:</strong> {prompt.interests.join(', ')}</p>
+
+      {collegeResponse && (
+        <div className="university-list">
+          {[1, 2, 3, 4, 5].map((num) => {
+            const university = collegeResponse[`University${num}`];
+            return university ? (
+              <div key={num} className="university-card">
+                <h3>{university.Name}</h3>
+                <p><strong>Strengths:</strong> {university.Strengths}</p>
+                <p><strong>Description:</strong> {university.Description}</p>
               </div>
-            ))}
-          </div>
+            ) : null;
+          })}
+        </div>
+      )}
+    </div>
+  ))}
+</div>
           <div className="search-results">
             <h3>Search Results</h3>
             {Array.isArray(searchResults) && searchResults.length > 0 ? (
