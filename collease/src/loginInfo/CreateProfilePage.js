@@ -47,42 +47,70 @@ function CreateProfilePage({ setAuth }) {
     }
   }, []);
 
-  const handleCreateProfile = (e) => {
+  const handleCreateProfile = async (e) => {
     e.preventDefault();
+  
     if (password !== confirmPassword) {
       alert('Passwords do not match');
       return;
     }
-
+  
     // Prepare the transcript data
     const transcript = coursesByYear.reduce((acc, year) => {
       year.courses.forEach((course) => {
-        acc.push([course.name, course.grade, year.year.replace('Year ', '')]);
+        acc.push([course.name, course.grade, parseInt(year.year.replace('Year ', ''))]);
       });
       return acc;
     }, []);
-
-    const profileData = {
-      username,
-      password,
-      gpa,
-      school,
-      satScore,
-      actScore,
-      AP_scores: apScores.map((ap) => [ap.name, ap.score]),
-      transcript,
-      projects,
-      jobs,
-      skills,
-      address,
+  
+    // Prepare the AP scores
+    const AP_scores = apScores.map((ap) => [ap.name, parseInt(ap.score, 10)]);
+  
+    // Prepare the location data (assuming address contains city and state)
+    const addressParts = address.split(',').map((part) => part.trim());
+    const city = addressParts[0] || '';
+    const state = addressParts[1] || '';
+  
+    // Prepare the student profile data matching server expectations
+    const studentProfile = {
+      transcript, // Array of [subject, grade, year]
+      gpa: parseFloat(gpa),
+      SAT: satScore ? parseInt(satScore, 10) : null,
+      ACT: actScore ? parseInt(actScore, 10) : null,
+      testScore: null, // This will be computed on the server
+      AP_scores,
+      location: [city, state],
+      interests: skills, // Assuming skills represent interests
+      degree_preferences: [], // Collect this from the user
+      school_size: '', // Collect this from the user
     };
-
-    console.log('Profile Data:', profileData);
-
-    // Submit profile data to the backend (e.g., POST request)
-    setAuth(true);
-    navigate('/home');
-  };
+  
+    console.log('Student Profile Data:', studentProfile);
+  
+    try {
+      // Send a POST request to the backend with the studentProfile data
+      const res = await fetch('http://localhost:5000/api/college-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(studentProfile),
+      });
+  
+      if (!res.ok) {
+        throw new Error(`Error: ${res.statusText}`);
+      }
+  
+      const data = await res.json();
+      console.log('Response from server:', data);
+  
+      // Navigate to the home page or handle the response as needed
+      setAuth(true);
+      navigate('/home');
+    } catch (error) {
+      console.error('Error creating profile:', error);
+    }
+  };  
 
   // Handle file uploads
   const handleTranscriptUpload = (e) => {
