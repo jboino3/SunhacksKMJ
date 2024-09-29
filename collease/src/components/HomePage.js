@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './HomePage.css'; // Import the CSS
-import collegeMajors from './collegeMajor'; // Import the sorted list of college majors
+import './HomePage.css';
+import collegeMajors from './collegeMajor'; 
 
 function HomePage() {
   const [previousPrompts, setPreviousPrompts] = useState([]);
@@ -10,9 +10,9 @@ function HomePage() {
     schoolSize: '',
     city: '',
     state: '',
-    interests: [] // New interests field to store user's interests
+    interests: [] 
   });
-  const [newInterest, setNewInterest] = useState(''); // Temporary state to add new interests
+  const [newInterest, setNewInterest] = useState(''); 
   const [searchResults, setSearchResults] = useState([]); // Store the search results
 
   // Updated school size options with specific ranges
@@ -49,37 +49,48 @@ function HomePage() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-
+  
+    const studentProfile = {
+      transcript: [], 
+      gpa: null, 
+      SAT: null, 
+      ACT: null, 
+      testScore: null, 
+      AP_scores: [], 
+      location: [searchParams.city || '', searchParams.state || ''],
+      interests: searchParams.interests,
+      degree_preferences: [searchParams.degree],
+      school_size: searchParams.schoolSize,
+    };
+  
     try {
-      // Send the searchParams object via a POST request
-      const res = await fetch('http://localhost:5001/api/college-search', {
+      const res = await fetch('http://localhost:5001/api/college-data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(searchParams), // Sending the searchParams data
+        body: JSON.stringify(studentProfile),
       });
-
+  
       if (!res.ok) {
         throw new Error(`Error: ${res.statusText}`);
       }
-
+  
       const data = await res.json();
       console.log('Search Results:', data);
-
-      // Save the search data into previousPrompts and store the result in searchResults
+  
       setPreviousPrompts([...previousPrompts, searchParams]);
       setSearchResults(data); // Assuming data is the search result from the backend
       setIsSearching(false);
     } catch (error) {
       console.error('Error during search request:', error);
     }
-  };
+  };  
 
   if (previousPrompts.length === 0 && !isSearching) {
     return (
       <div className="home-container">
-        <h2 className="home-title">Welcome to the College Search App</h2>
+        <h2 className="home-title">Welcome to the Collease</h2>
         <p>No previous search prompts found.</p>
         <button className="new-search-button" onClick={() => setIsSearching(true)}>
           Start New College Search
