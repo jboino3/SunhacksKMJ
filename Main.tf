@@ -118,14 +118,25 @@ resource "aws_s3_bucket" "website_bucket" {
 }
 
 # Upload Website Files to S3 Bucket
+locals {
+  # List of files you want to upload to S3
+  website_files = [
+    "public/index.html",
+    "public/styles.css",
+    "src/app.js",
+    # Add other files you want to include, explicitly listing them
+  ]
+}
+
 resource "aws_s3_bucket_object" "website_files" {
-  for_each = fileset("${path.module}/collease", "**/*")
+  for_each = { for file in local.website_files : file => file }
 
   bucket = aws_s3_bucket.website_bucket.bucket
   key    = each.value
   source = "${path.module}/collease/${each.value}"
   acl    = "public-read"
 }
+
 
 # Outputs
 output "public_ip" {
