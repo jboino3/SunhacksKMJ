@@ -108,14 +108,16 @@ resource "random_string" "unique_suffix" {
 
 # S3 Bucket
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = "colleasehackathon24${random_string.unique_suffix.result}"  # No hyphen before random string
-
-  # Website configuration
-  website {
-    index_document = "index.html"
-    error_document = "error.html"
-  }
+   bucket = "collease-hackathon24-${random_string.unique_suffix.result}"  # Corrected: Removed extra brace
 }
+
+terraform {
+    backend "s3" {
+      bucket         = "collease-hackathon24-12345678"  # Replace with your actual bucket name
+      key            = "terraform/state"  # This is the path within the bucket where the state file will be stored
+      region         = "us-west-2"        # Replace with your bucket's region
+    }
+  }
 
 resource "aws_s3_bucket_website_configuration" "website" {
   bucket = aws_s3_bucket.website_bucket.id
