@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.93df6d62.css",
+    "main.js": "/static/js/main.82b8a425.js",
+    "static/js/453.f82ecb31.chunk.js": "/static/js/453.f82ecb31.chunk.js",
+    "static/media/ColleaseLogo.png": "/static/media/ColleaseLogo.ffec6bcd02a17390c57e.png",
+    "index.html": "/index.html",
+    "main.93df6d62.css.map": "/static/css/main.93df6d62.css.map",
+    "main.82b8a425.js.map": "/static/js/main.82b8a425.js.map",
+    "453.f82ecb31.chunk.js.map": "/static/js/453.f82ecb31.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.93df6d62.css",
+    "static/js/main.82b8a425.js"
+  ]
+}

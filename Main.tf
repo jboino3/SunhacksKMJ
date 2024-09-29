@@ -126,10 +126,6 @@ resource "aws_s3_bucket_website_configuration" "website" {
   index_document {
     suffix = "index.html"
   }
-
-  error_document {
-    key = "error.html"
-  }
 }
 
 resource "aws_s3_bucket_public_access_block" "website_bucket_block" {
@@ -144,14 +140,14 @@ resource "aws_s3_bucket_public_access_block" "website_bucket_block" {
 # Upload Website Files to S3 Bucket
 locals {
   # List of files you want to upload to S3
-  website_files = fileset("${path.module}/build", "**")
+  website_files = fileset("${path.module}/build", "**/*")  # Ensure all files are included
 }
 
 resource "aws_s3_object" "website_files" {
   for_each = { for file in local.website_files : file => file }
 
   bucket = aws_s3_bucket.website_bucket.id
-  key    = each.value
+  key    = each.value   # This keeps the original structure intact
   source = "${path.module}/build/${each.value}"
 }
 
