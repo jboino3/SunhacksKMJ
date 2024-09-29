@@ -6,22 +6,38 @@
     justify-content: flex-start;
     padding: 20px;
     min-height: 100vh;
-    background: linear-gradient(135deg, #121212 0%, #1E1E1E 100%);
+    background: linear-gradient(270deg, #64B5F6, #81C784, #FFD54F, #FF8A65, #9575CD);
+    background-size: 400% 400%;
+    animation: gradientAnimation 12s ease infinite;
     font-family: 'Poppins', sans-serif;
     color: #E0E0E0;
 }
 
+/* Gradient Animation */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 /* Title and Header */
 .home-title {
-    color: #2196F3;
-    font-size: 32px;
+    color: #FFFFFF;
+    font-size: 36px;
     font-weight: bold;
     margin-bottom: 20px;
     text-align: center;
+    text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.7);
 }
 
 .home-subtitle {
-    color: #B0BEC5;
+    color: #FFFFFF;
     font-size: 24px;
     margin-bottom: 15px;
     text-align: center;
@@ -29,21 +45,24 @@
 
 /* Form Container */
 .form-container {
-    background: #1E1E1E;
+    background: rgba(30, 30, 30, 0.9);
     border-radius: 15px;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
     padding: 40px;
-    max-width: 600px;
+    max-width: 800px;
     width: 100%;
     margin-bottom: 20px;
-    transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+    margin-top: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(5px);
 }
 
 .form-container:hover {
     transform: scale(1.02);
-    background-color: #2A2A2A;
+    box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.7);
 }
 
+/* Form Inputs */
 .form-container label {
     display: block;
     font-size: 16px;
@@ -52,7 +71,8 @@
 }
 
 .form-container input,
-.form-container select {
+.form-container select,
+.form-container textarea { /* Added textarea to this group */
     width: 100%;
     padding: 12px;
     margin-bottom: 20px;
@@ -61,55 +81,56 @@
     font-size: 16px;
     background-color: #333;
     color: white;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-container input:focus,
-.form-container select:focus {
+.form-container select:focus,
+.form-container textarea:focus { /* Updated to include textarea */
     outline: none;
-    border-color: #2196F3;
-    box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+    border-color: #64B5F6;
+    box-shadow: 0 0 10px rgba(100, 181, 246, 0.7);
 }
 
 /* Buttons */
 .form-container button {
-    background: #2196F3;
+    background: linear-gradient(270deg, #64B5F6, #81C784, #FFD54F, #FF8A65, #9575CD);
+    background-size: 400% 400%;
     color: white;
     padding: 12px 20px;
-    border: none;
+    border: 2px solid white;
     border-radius: 25px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0px 4px 12px rgba(33, 150, 243, 0.3);
-    width: 100%; /* Ensure buttons take full width inside their container */
-    max-width: 180px; /* Limit maximum width for the buttons to make them uniform */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 6px 15px rgba(100, 181, 246, 0.4);
+    width: 100%;
+    max-width: 180px;
     margin-right: 10px;
     margin-top: 10px;
     text-align: center;
-}
-
-.form-container button:last-child {
-    margin-right: 0;
+    animation: gradientAnimation 12s ease infinite;
 }
 
 .form-container button:hover {
-    background-color: #1976D2;
-    box-shadow: 0px 6px 15px rgba(33, 150, 243, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0px 10px 20px rgba(100, 181, 246, 0.7);
 }
 
+/* Cancel Button */
 .cancel-button {
     background: #ff5252;
+    border: 2px solid white;
     transition: background-color 0.3s ease;
-    width: 100%; /* Same width as the search button */
-    max-width: 180px; /* Match maximum width for consistency */
+    width: 100%;
+    max-width: 180px;
 }
 
 .cancel-button:hover {
     background-color: #e53935;
 }
 
-/* Align buttons */
+/* Align Buttons */
 .button-group {
     display: flex;
     justify-content: flex-start;
@@ -118,7 +139,7 @@
     margin-top: 20px;
 }
 
-/* Info text for location */
+/* Info Text for Location */
 .form-info {
     font-size: 12px;
     color: #B0BEC5;
@@ -146,6 +167,7 @@
     justify-content: space-between;
 }
 
+/* Remove Interest Button */
 .remove-interest-button {
     background: none;
     border: none;
@@ -172,21 +194,23 @@
     outline: none;
 }
 
-/* Previous Prompts Section */
+/* Prompts Section */
 .prompts-container {
-    background: #1E1E1E;
+    background: rgba(30, 30, 30, 0.9);
     border-radius: 15px;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
     padding: 40px;
-    max-width: 600px;
+    max-width: 800px;
     width: 100%;
     margin-bottom: 20px;
-    transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+    margin-top: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(5px);
 }
 
 .prompts-container:hover {
     transform: scale(1.02);
-    background-color: #2A2A2A;
+    box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.7);
 }
 
 .prompts-container h3 {
@@ -194,6 +218,7 @@
     color: #E0E0E0;
 }
 
+/* Prompts List */
 .prompts-list {
     height: 400px;
     overflow-y: scroll;
@@ -203,28 +228,61 @@
 }
 
 .prompt-item {
-    padding: 10px;
-    border-bottom: 1px solid #555;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #424242;
+    margin-bottom: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s, box-shadow 0.3s ease;
 }
 
-.prompt-item:last-child {
-    border-bottom: none;
+.prompt-item:hover {
+    background-color: #555;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5);
 }
 
 /* New Search Button */
 .new-search-button {
-    background-color: #2196F3;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
+    background: linear-gradient(135deg, #2196F3, #1E88E5);
     color: white;
+    padding: 14px;
     font-size: 16px;
+    border: none;
+    border-radius: 25px;
     cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0px 4px 12px rgba(33, 150, 243, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 8px 20px rgba(33, 150, 243, 0.4);
     margin-top: 20px;
+    width: 100%;
+    max-width: 180px;
 }
 
 .new-search-button:hover {
-    background-color: #1976D2;
+    transform: translateY(-3px);
+    box-shadow: 0px 10px 25px rgba(33, 150, 243, 0.6);
+}
+
+/* Search Results */
+.search-results {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.search-results ul {
+    list-style: none;
+    padding: 0;
+}
+
+.search-results li {
+    background: rgba(42, 42, 42, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s ease;
+}
+
+.search-results li:hover {
+    background-color: rgba(33, 33, 33, 0.9);
 }

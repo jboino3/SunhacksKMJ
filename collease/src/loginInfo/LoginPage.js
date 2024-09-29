@@ -1,3 +1,4 @@
+// LoginPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css'; // Import the CSS file
@@ -21,6 +22,7 @@ function LoginPage({ setAuth }) {
 
   return (
     <div className="login-container">
+      <div className="background-overlay"></div> {/* Parallax background */}
       <div className="login-box">
         <img src={logo} alt="Collease Logo" className="logo" />
         <h2>Collease</h2>
