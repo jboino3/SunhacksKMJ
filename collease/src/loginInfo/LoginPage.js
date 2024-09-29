@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css'; // Import the CSS file
+import logo from '../Images/ColleaseLogo.png'; // Adjust path accordingly
 
 function LoginPage({ setAuth }) {
   const [username, setUsername] = useState('');
@@ -21,6 +22,7 @@ function LoginPage({ setAuth }) {
   return (
     <div className="login-container">
       <div className="login-box">
+        <img src={logo} alt="Collease Logo" className="logo" />
         <h2>Collease</h2>
         <p className="login-text">Please enter your credentials to Log In.</p>
         {loginError && <p className="error-text">{loginError}</p>}
