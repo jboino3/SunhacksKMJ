@@ -5,30 +5,17 @@ import LoginPage from './loginInfo/LoginPage';
 import CreateProfilePage from './loginInfo/CreateProfilePage';
 import HomePage from './components/HomePage';
 
-
 function App() {
-  // Initialize isAuthenticated based on localStorage or set to false
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.getItem('isAuthenticated') === 'true' || false
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Start unauthenticated
 
   useEffect(() => {
-    // Check if the browser supports geolocation
+    // Optionally check if geolocation is supported and get user location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           console.log(`User location: Latitude ${latitude}, Longitude ${longitude}`);
-          
-          // Store the location in localStorage (or send it to your server)
           localStorage.setItem('userLocation', JSON.stringify({ latitude, longitude }));
-          
-          // Optionally send to server
-          // fetch('/store-location', {
-          //   method: 'POST',
-          //   headers: { 'Content-Type': 'application/json' },
-          //   body: JSON.stringify({ latitude, longitude })
-          // });
         },
         (error) => {
           console.error("Error getting location: ", error.message);
@@ -57,7 +44,7 @@ function App() {
         <Routes>
           <Route 
             path="/" 
-            element={isAuthenticated ? <Navigate to="/home" /> : <LoginPage setAuth={handleLogin} />} 
+            element={<LoginPage setAuth={handleLogin} />} 
           />
           <Route 
             path="/create-profile" 
