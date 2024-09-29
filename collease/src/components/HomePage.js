@@ -567,12 +567,9 @@ function HomePage() {
             <h3>Previous Results</h3>
             {collegeResults.length > 0 ? (
               <ul>
-                {collegeResults.map((college, index) => (
-                  <li key={index}>
-                    {`${college.name} - ${college.location}`}
-                    <p>Test Score: {college.test}</p>
-                  </li>
-                ))}
+                <li>
+                  <p>Test Score: {collegeResults.test}</p> {/* Display the test score */}
+                </li>
               </ul>
             ) : (
               <p>No previous results available.</p>
