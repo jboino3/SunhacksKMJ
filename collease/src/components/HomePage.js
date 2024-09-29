@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 import collegeMajors from './collegeMajor';
 
@@ -23,11 +22,24 @@ function HomePage() {
   });
   const [newInterest, setNewInterest] = useState('');
   const [newSkill, setNewSkill] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [collegeResults, setCollegeResults] = useState([]);
+  const [searchResults, setSearchResults] = useState([]); // Store the search results
+  const [collegeResults, setCollegeResults] = useState([]); // Store the results from GET request
   const [collegeResponse, setCollegeResponse] = useState(null);
 
-  const navigate = useNavigate(); 
+  // Function to fetch college results after the POST request
+  /*
+  const fetchCollegeResults = async () => {
+    try {
+      const res = await fetch('http://localhost:5001/api/college-data');
+      if (!res.ok) {
+        throw new Error('Failed to fetch college results');
+      }
+      const data = await res.json();
+      setCollegeResults(data);
+    } catch (error) {
+      console.error('Error fetching college results:', error);
+    }
+  };*/
 
   const schoolSizeOptions = [
     { label: 'Small (1-1,000 students)', value: 'Small' },
@@ -49,7 +61,7 @@ function HomePage() {
         ...searchParams,
         interests: [...searchParams.interests, newInterest.trim()],
       });
-      setNewInterest('');
+      setNewInterest(''); // Clear the input field after adding
     }
   };
 
@@ -59,7 +71,7 @@ function HomePage() {
         ...searchParams,
         skills: [...searchParams.skills, newSkill.trim()],
       });
-      setNewSkill('');
+      setNewSkill(''); // Clear the input field after adding
     }
   };
 
@@ -190,16 +202,21 @@ function HomePage() {
       }
 
       const data = await res.json();
-      setSearchResults(data.colleges); // Assuming the response returns a list of colleges
+      console.log('Test value from server:', data.test); // Logging the "test" value
+      setCollegeResponse(data.test)
+
+      /*
+      setCollegeResults(data.test)
+
+      // Fetch updated results after successful POST
+      await fetchCollegeResults();
+      */
+
       setPreviousPrompts([...previousPrompts, searchParams]);
       setIsSearching(false);
     } catch (error) {
       console.error('Error during search request:', error);
     }
-  };
-
-  const handleCardClick = (collegeId) => {
-    navigate(`/college-details/${collegeId}`);
   };
 
   return (
@@ -210,6 +227,7 @@ function HomePage() {
         <div className="form-container">
           <h3>Search for Colleges</h3>
           <form onSubmit={handleSearch}>
+            {/* GPA, SAT, ACT */}
             <div>
               <label>GPA:</label>
               <input
@@ -293,6 +311,7 @@ function HomePage() {
                       setSearchParams({ ...searchParams, projects: updatedProjects });
                     }}
                   />
+                  <label>Start Date:</label>
                   <input
                     type="date"
                     value={project.startDate}
@@ -302,6 +321,7 @@ function HomePage() {
                       setSearchParams({ ...searchParams, projects: updatedProjects });
                     }}
                   />
+                  <label>End Date:</label>
                   <input
                     type="date"
                     value={project.endDate}
@@ -345,6 +365,7 @@ function HomePage() {
                       setSearchParams({ ...searchParams, jobs: updatedJobs });
                     }}
                   />
+                  <label>Start Date:</label>
                   <input
                     type="date"
                     value={job.startDate}
@@ -354,6 +375,7 @@ function HomePage() {
                       setSearchParams({ ...searchParams, jobs: updatedJobs });
                     }}
                   />
+                  <label>End Date:</label>
                   <input
                     type="date"
                     value={job.endDate}
@@ -375,12 +397,12 @@ function HomePage() {
 
             {/* Transcript */}
             <div>
-              <h4>Transcript</h4>
+              <h4>Transcript (Classes and Grades by Year)</h4>
               {searchParams.transcript.map((year, yearIndex) => (
-                <div key={yearIndex}>
+                <div key={yearIndex} className="year-section">
                   <h5>{year.year}</h5>
                   {year.courses.map((course, courseIndex) => (
-                    <div key={courseIndex}>
+                    <div key={courseIndex} className="class-grade-container">
                       <input
                         type="text"
                         value={course.name}
@@ -526,27 +548,33 @@ function HomePage() {
                 <p>School Size: {prompt.schoolSize}</p>
                 <p>Location: {prompt.city ? `${prompt.city}, ${prompt.state}` : 'Not specified'}</p>
                 <p>Interests: {prompt.interests.join(', ')}</p>
+                <p>Response: {collegeResponse}</p>
               </div>
             ))}
           </div>
-
-          {/* Search Results */}
           <div className="search-results">
             <h3>Search Results</h3>
             {Array.isArray(searchResults) && searchResults.length > 0 ? (
               <ul>
                 {searchResults.map((result, index) => (
-                  <li 
-                    key={index} 
-                    className="college-card" 
-                    onClick={() => handleCardClick(result.id)} // Navigate to details on click
-                  >
-                    <p>{`${result.name} - ${result.location}`}</p>
+                  <li key={index}>
+                    {`${result.name} - ${result.location}`}
                   </li>
                 ))}
               </ul>
             ) : (
               <p>No search results found.</p>
+            )}
+
+            <h3>Previous Results</h3>
+            {collegeResults.length > 0 ? (
+              <ul>
+                <li>
+                  <p>Test Score: {collegeResults.test}</p> {/* Display the test score */}
+                </li>
+              </ul>
+            ) : (
+              <p>No previous results available.</p>
             )}
           </div>
         </div>
