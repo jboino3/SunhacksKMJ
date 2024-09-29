@@ -64,7 +64,7 @@ resource "aws_security_group" "ssh" {
 
 resource "aws_key_pair" "open_web_ui" {
     key_name = "open_web_ui"
-    public_key = file("key.pub")
+    public_key = file("id_rsa.pub")
 }
 
 resource "aws_spot_instance_request" "open_web_ui" {
