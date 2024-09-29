@@ -52,7 +52,7 @@ function HomePage() {
 
     try {
       // Send the searchParams object via a POST request
-      const res = await fetch('http://localhost:5000/api/college-search', {
+      const res = await fetch('http://localhost:5001/api/college-search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
