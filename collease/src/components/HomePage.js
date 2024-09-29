@@ -13,7 +13,7 @@ function HomePage() {
     interests: [] 
   });
   const [newInterest, setNewInterest] = useState(''); 
-  const [searchResults, setSearchResults] = useState([]); // Store the search results
+  const [searchResults, setSearchResults] = useState([]); 
 
   // Updated school size options with specific ranges
   const schoolSizeOptions = [
@@ -77,10 +77,14 @@ function HomePage() {
       }
   
       const data = await res.json();
-      console.log('Search Results:', data);
-  
+
+      if (Array.isArray(data)) {
+        setSearchResults(data); 
+      } else {
+        setSearchResults([]); 
+      }
+
       setPreviousPrompts([...previousPrompts, searchParams]);
-      setSearchResults(data); // Assuming data is the search result from the backend
       setIsSearching(false);
     } catch (error) {
       console.error('Error during search request:', error);
@@ -230,11 +234,15 @@ function HomePage() {
           {/* Display Search Results */}
           <div className="search-results">
             <h3>Search Results</h3>
-            <ul>
-              {searchResults.map((result, index) => (
-                <li key={index}>{`${result.name} - ${result.location}`}</li> 
-              ))}
-            </ul>
+            {Array.isArray(searchResults) && searchResults.length > 0 ? (
+              <ul>
+                {searchResults.map((result, index) => (
+                  <li key={index}>{`${result.name} - ${result.location}`}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>No search results found.</p>
+            )}
           </div>
         </div>
       )}
