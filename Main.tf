@@ -70,7 +70,7 @@ resource "aws_security_group" "ssh" {
 # Key Pair
 resource "aws_key_pair" "open_web_ui" {
   key_name   = "open_web_ui"
-  public_key = file("id_rsa.pub")
+  public_key = file("id_rsa")
 }
 
 # Spot Instance
